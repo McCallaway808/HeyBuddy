@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#E8C86A" />
+  <meta name="theme-color" content="#D8C486" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="HeyBuddy" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
-  <title>HeyBuddy — Today</title>
+  <title>HeyBuddy — Let's get to work</title>
   <style>
     :root {
-      --butter: #E8C86A;
-      --butter-light: #F4E5AE;
-      --butter-soft: #F8EDC8;
-      --cream: #F8F4E9;
-      --paper: #FFFDF7;
-      --ink: #2E2A22;
-      --muted: #7B7467;
-      --line: rgba(46, 42, 34, 0.10);
+      --butter: #D8C486;
+      --butter-light: #ECE1BD;
+      --butter-soft: #F3EBD3;
+      --cream: #F6F1E7;
+      --paper: #FCFAF4;
+      --ink: #302C24;
+      --muted: #7C766B;
+      --line: rgba(48, 44, 36, 0.10);
       --sage: #A9B39B;
-      --sage-soft: #E4E8DE;
-      --brown: #5A4938;
+      --sage-soft: #E5E8DF;
+      --brown: #5D513F;
       --danger: #A9614E;
       --shadow: 0 18px 60px rgba(73, 61, 38, 0.10);
       --radius-xl: 32px;
@@ -39,8 +39,7 @@
       font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at 20% -10%, rgba(232,200,106,.24), transparent 34%),
-        radial-gradient(circle at 100% 20%, rgba(169,179,155,.16), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 32%),
         var(--cream);
       -webkit-font-smoothing: antialiased;
       overscroll-behavior-y: none;
@@ -483,54 +482,217 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+
+    /* Today ritual */
+    #todayScreen {
+      position: relative;
+      padding: max(26px, env(safe-area-inset-top)) 24px calc(108px + env(safe-area-inset-bottom));
+    }
+    .today-wrap {
+      min-height: calc(100dvh - 132px - env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 0 32px;
+    }
+    .today-head {
+      opacity: 0;
+      transform: translateY(7px);
+      animation: welcomeFade .85s .08s ease forwards;
+    }
+    .brand-wordmark {
+      display: inline-flex;
+      align-items: baseline;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -.055em;
+      color: var(--ink);
+    }
+    .brand-wordmark .hey { font-weight: 760; }
+    .brand-wordmark .buddy { font-weight: 430; }
+    .today-date {
+      margin: 18px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      color: var(--brown);
+      letter-spacing: -.015em;
+    }
+    .week-calendar {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      opacity: 0;
+      transform: translateY(7px);
+      animation: welcomeFade .85s .28s ease forwards;
+    }
+    .calendar-day {
+      position: relative;
+      min-width: 0;
+      padding: 9px 2px 14px;
+      border-radius: 15px;
+      text-align: center;
+      color: rgba(48,44,36,.40);
+    }
+    .calendar-day.workout {
+      background: rgba(216,196,134,.16);
+      color: rgba(48,44,36,.70);
+    }
+    .calendar-day .letter {
+      display: block;
+      font-size: 9px;
+      font-weight: 720;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .calendar-day .number {
+      width: 30px;
+      height: 30px;
+      margin: 0 auto;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 630;
+    }
+    .calendar-day.today .number {
+      border: 1px solid rgba(48,44,36,.72);
+      color: var(--ink);
+      background: rgba(252,250,244,.5);
+    }
+    .calendar-day.workout::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 7px;
+      width: 12px;
+      height: 2px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+      background: rgba(93,81,63,.48);
+    }
+    .calendar-day.completed::after {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brown);
+    }
+    .today-centre {
+      margin: auto 0;
+      padding: 42px 0 54px;
+      text-align: center;
+    }
+    .opening-line {
+      margin: 0 auto 38px;
+      max-width: 360px;
+      font-size: clamp(44px, 12vw, 59px);
+      line-height: .98;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: welcomeFade .95s .5s ease forwards;
+    }
+    .begin-action {
+      width: min(100%, 284px);
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: welcomeFade .85s .76s ease forwards;
+    }
+    .begin-btn {
+      justify-content: center;
+      min-height: 58px;
+      padding: 0 22px;
+      letter-spacing: .01em;
+    }
+
+    /* Workout introduction */
+    #workoutIntroScreen {
+      padding: max(25px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+    }
+    .intro-shell {
+      min-height: calc(100dvh - 54px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+    .intro-back {
+      align-self: flex-start;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 0;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .workout-intro-copy {
+      margin: auto 0;
+      padding: 54px 0;
+    }
+    .workout-intro-copy .eyebrow { margin-bottom: 14px; }
+    .workout-intro-copy h1 { font-size: clamp(45px, 12vw, 60px); max-width: 390px; }
+    .intro-meta {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin: 20px 0 42px;
+    }
+    .intro-meta span {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      background: rgba(252,250,244,.58);
+    }
+    .first-movement {
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .first-movement p { margin: 5px 0 0; font-size: 13px; }
+    .intro-start { margin-top: auto; }
+
+    @keyframes welcomeFade {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <main class="app-shell" id="appShell">
     <section class="screen active" id="todayScreen">
-      <header class="topbar">
-        <div class="wordmark">Hey<span>Buddy</span></div>
-        <button class="avatar" aria-label="Profile">M</button>
-      </header>
-
-      <div class="intro">
-        <div class="eyebrow">Tuesday, 14 July</div>
-        <h1>Good afternoon,<br>Matthijs.</h1>
-        <p>Your next job is clear. We train, log the work, and leave the gym with something still in reserve.</p>
-      </div>
-
-      <article class="hero-card">
-        <div class="hero-meta">
-          <span class="pill"><span class="dot"></span> Today</span>
-          <span class="pill">70–80 min</span>
+      <div class="today-wrap">
+        <div class="today-head">
+          <div class="brand-wordmark" aria-label="HeyBuddy"><span class="hey">Hey</span><span class="buddy">Buddy</span></div>
+          <div class="today-date" id="todayDate">Tuesday, 14 July</div>
+          <div class="week-calendar" id="weekCalendar" aria-label="Weekly training calendar"></div>
         </div>
-        <h2>Full Body A</h2>
-        <p>Quadriceps and upper chest. Seven exercises, twenty-three working sets.</p>
-        <button class="primary-btn" id="startWorkoutBtn">
-          <span>Start workout</span>
-          <span class="circle-arrow">→</span>
-        </button>
-      </article>
 
-      <article class="coach-card">
-        <div class="buddy-mark">B</div>
-        <div>
-          <strong>One thing for today</strong>
-          <p>On the hack squat, keep your right knee tracking with the foot. Depth matters, but control comes first.</p>
+        <div class="today-centre">
+          <h1 class="opening-line">Let’s get to work.</h1>
+          <div class="begin-action">
+            <button class="primary-btn begin-btn" id="startWorkoutBtn"><span>Begin</span></button>
+          </div>
         </div>
-      </article>
-
-      <div class="section-title">
-        <h3>This week</h3>
-        <button data-nav="plan">View plan</button>
       </div>
-      <div class="week-row">
-        <div class="day-chip done"><div class="day">Mon</div><div class="date">13</div></div>
-        <div class="day-chip active"><div class="day">Tue</div><div class="date">14</div></div>
-        <div class="day-chip"><div class="day">Wed</div><div class="date">15</div></div>
-        <div class="day-chip"><div class="day">Fri</div><div class="date">17</div></div>
-        <div class="day-chip"><div class="day">Sat</div><div class="date">18</div></div>
+    </section>
+
+    <section class="screen" id="workoutIntroScreen">
+      <div class="intro-shell">
+        <button class="intro-back" id="backFromIntroBtn">← Today</button>
+        <div class="workout-intro-copy">
+          <div class="eyebrow">Today’s work</div>
+          <h1>Full Body A</h1>
+          <div class="intro-meta"><span>About 70–80 minutes</span><span>7 exercises</span></div>
+          <div class="first-movement">
+            <div class="eyebrow">First movement</div>
+            <h3>Hack squat</h3>
+            <p>4 sets · 6–10 repetitions</p>
+          </div>
+        </div>
+        <div class="intro-start">
+          <button class="primary-btn" id="startFirstSetBtn"><span>Start first set</span><span class="circle-arrow">→</span></button>
+        </div>
       </div>
     </section>
 
@@ -540,9 +702,9 @@
         <button class="avatar">M</button>
       </header>
       <div class="page-heading">
-        <div class="eyebrow">Your programme</div>
-        <h1>The plan.</h1>
-        <p>Three purposeful sessions. Enough work to grow, enough room to recover.</p>
+        <div class="eyebrow">Your dashboard</div>
+        <h1>The bigger picture.</h1>
+        <p>Your programme, current phase and next sessions—kept out of the way until you need them.</p>
       </div>
 
       <article class="phase-card">
@@ -667,7 +829,7 @@
       </button>
       <button class="nav-btn" data-nav="plan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M7 11h10M7 15h6"/></svg>
-        <span>Plan</span><span class="nav-indicator"></span>
+        <span>Dashboard</span><span class="nav-indicator"></span>
       </button>
       <button class="nav-btn" data-nav="progress">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19h18"/></svg>
@@ -722,12 +884,49 @@
     }
     let workoutState = readSavedWorkout();
 
+    function renderTodayCalendar() {
+      const now = new Date();
+      const dateLabel = new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      }).format(now);
+      document.getElementById('todayDate').textContent = dateLabel;
+
+      const mondayOffset = (now.getDay() + 6) % 7;
+      const monday = new Date(now);
+      monday.setHours(12, 0, 0, 0);
+      monday.setDate(now.getDate() - mondayOffset);
+
+      // Prototype schedule: Monday, Tuesday and Friday.
+      // This lets the calendar demonstrate completed, current and future workout states.
+      const workoutWeekdays = new Set([1, 2, 5]);
+      const calendar = document.getElementById('weekCalendar');
+      const letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      calendar.innerHTML = '';
+
+      for (let index = 0; index < 7; index += 1) {
+        const day = new Date(monday);
+        day.setDate(monday.getDate() + index);
+        const weekday = day.getDay();
+        const isToday = day.toDateString() === now.toDateString();
+        const isWorkout = workoutWeekdays.has(weekday);
+        const isCompleted = isWorkout && day < now && !isToday;
+        const cell = document.createElement('div');
+        cell.className = ['calendar-day', isWorkout ? 'workout' : '', isToday ? 'today' : '', isCompleted ? 'completed' : ''].filter(Boolean).join(' ');
+        cell.setAttribute('aria-label', `${day.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}${isWorkout ? ', workout planned' : ''}${isCompleted ? ', completed' : ''}`);
+        cell.innerHTML = `<span class="letter">${letters[index]}</span><span class="number">${day.getDate()}</span>`;
+        calendar.appendChild(cell);
+      }
+    }
+
+    renderTodayCalendar();
+
     const screens = {
       today: document.getElementById('todayScreen'),
       plan: document.getElementById('planScreen'),
       progress: document.getElementById('progressScreen')
     };
     const bottomNav = document.getElementById('bottomNav');
+    const workoutIntroScreen = document.getElementById('workoutIntroScreen');
     const workoutScreen = document.getElementById('workoutScreen');
     const toast = document.getElementById('toast');
 
@@ -751,7 +950,23 @@
       window.scrollTo({ top: 0 });
     }
 
-    document.getElementById('startWorkoutBtn').addEventListener('click', () => startWorkout(0));
+    function showWorkoutIntro() {
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      bottomNav.classList.add('hidden');
+      workoutIntroScreen.classList.add('active');
+      window.scrollTo({ top: 0 });
+    }
+
+    document.getElementById('startWorkoutBtn').addEventListener('click', showWorkoutIntro);
+    document.getElementById('startFirstSetBtn').addEventListener('click', () => {
+      workoutIntroScreen.classList.remove('active');
+      startWorkout(0);
+    });
+    document.getElementById('backFromIntroBtn').addEventListener('click', () => {
+      workoutIntroScreen.classList.remove('active');
+      bottomNav.classList.remove('hidden');
+      navigate('today');
+    });
     document.querySelectorAll('[data-start-session]').forEach(c => c.addEventListener('click', () => startWorkout(Number(c.dataset.startSession))));
 
     function closeWorkout() {
