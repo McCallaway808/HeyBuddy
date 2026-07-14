@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="HeyBuddy" />
-  <title>HeyBuddy — Workout Flow V5</title>
+  <title>HeyBuddy — Workout Flow V5.1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -368,36 +368,52 @@
     .handle { width:42px; height:5px; border-radius:99px; background:rgba(45,42,36,.16); margin:0 auto 18px; }
     .sheet-head { display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin-bottom:13px; }
     .sheet-head h2 { margin:6px 0 0; font-family:"Fraunces",Georgia,serif; font-size:29px; font-weight:500; letter-spacing:-.035em; }
-    .picker-grid { display:grid; grid-template-columns:1fr 1fr; gap:17px; position:relative; }
+    .picker-grid { display:grid; grid-template-columns:1fr 1fr; gap:17px; }
     .picker-col label { display:block; text-align:center; color:var(--muted); font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:7px; }
-    .wheel {
+    .wheel-shell {
+      position:relative;
       height:174px;
-      overflow-y:auto;
-      scroll-snap-type:y mandatory;
-      scrollbar-width:none;
       border-top:1px solid var(--line);
       border-bottom:1px solid var(--line);
+      overflow:hidden;
+    }
+    .wheel {
+      position:relative;
+      z-index:1;
+      height:174px;
+      padding-block:58px;
+      overflow-y:auto;
+      scroll-snap-type:y mandatory;
+      scroll-padding-block:58px;
+      scrollbar-width:none;
       mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
       -webkit-mask-image:linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
       overscroll-behavior:contain;
     }
     .wheel::-webkit-scrollbar { display:none; }
-    .wheel::before, .wheel::after { content:""; display:block; height:58px; }
     .wheel-option {
       height:58px;
       scroll-snap-align:center;
+      scroll-snap-stop:always;
       display:grid;
       place-items:center;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
       font-size:18px;
+      line-height:1;
       font-weight:650;
       color:rgba(45,42,36,.34);
       cursor:pointer;
+      transition:font-size .12s ease, color .12s ease;
     }
     .wheel-option.selected { color:var(--ink); font-size:25px; }
     .picker-line {
       pointer-events:none;
       position:absolute;
-      left:0; right:0; top:87px;
+      z-index:0;
+      left:0;
+      right:0;
+      top:50%;
       height:58px;
       transform:translateY(-50%);
       border-top:1px solid var(--line-strong);
@@ -563,9 +579,14 @@
           <button class="text-button" id="cancelPicker">Cancel</button>
         </div>
         <div class="picker-grid">
-          <div class="picker-line"></div>
-          <div class="picker-col"><label>Weight · kg</label><div class="wheel" id="weightWheel"></div></div>
-          <div class="picker-col"><label>Repetitions</label><div class="wheel" id="repsWheel"></div></div>
+          <div class="picker-col">
+            <label>Weight · kg</label>
+            <div class="wheel-shell"><div class="picker-line"></div><div class="wheel" id="weightWheel"></div></div>
+          </div>
+          <div class="picker-col">
+            <label>Repetitions</label>
+            <div class="wheel-shell"><div class="picker-line"></div><div class="wheel" id="repsWheel"></div></div>
+          </div>
         </div>
         <button class="primary" id="confirmPicker">Use these numbers</button>
       </div>
@@ -824,6 +845,10 @@
     document.getElementById('cancelPicker').addEventListener('click', () => pickerBackdrop.classList.remove('open'));
     pickerBackdrop.addEventListener('click', e => { if(e.target===pickerBackdrop) pickerBackdrop.classList.remove('open'); });
 
+    function centredScrollTop(wheel, option) {
+      return option.offsetTop - ((wheel.clientHeight - option.offsetHeight) / 2);
+    }
+
     function scrollToValue(wheel,value,smooth) {
       const options=[...wheel.querySelectorAll('.wheel-option')];
       let nearest=options[0];
@@ -832,15 +857,17 @@
         const diff=Math.abs(Number(option.dataset.value)-Number(value));
         if(diff<distance){distance=diff;nearest=option;}
       });
-      wheel.scrollTo({top:nearest.offsetTop-58, behavior:smooth?'smooth':'auto'});
-      setTimeout(() => updateWheelSelection(wheel, wheel===weightWheel?'weight':'reps'), smooth?260:30);
+      wheel.scrollTo({top:centredScrollTop(wheel, nearest), behavior:smooth?'smooth':'auto'});
+      setTimeout(() => updateWheelSelection(wheel, wheel===weightWheel?'weight':'reps'), smooth?280:40);
     }
 
     function updateWheelSelection(wheel,type) {
-      const centre=wheel.scrollTop+wheel.clientHeight/2;
+      const wheelRect=wheel.getBoundingClientRect();
+      const centre=wheelRect.top+(wheelRect.height/2);
       let closest=null, distance=Infinity;
       wheel.querySelectorAll('.wheel-option').forEach(option => {
-        const optionCentre=option.offsetTop+option.offsetHeight/2;
+        const optionRect=option.getBoundingClientRect();
+        const optionCentre=optionRect.top+(optionRect.height/2);
         const diff=Math.abs(optionCentre-centre);
         option.classList.remove('selected');
         if(diff<distance){distance=diff;closest=option;}
