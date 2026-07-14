@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Hypertrophy" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Matthijs Hypertrophy</title>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">MATTHIJS</div>
+      <h1>Hypertrophy Blueprint</h1>
+    </div>
+    <button id="exportBtn" class="ghost">Export</button>
+  </header>
+
+  <main>
+    <section class="hero card">
+      <div>
+        <span class="pill">3-day split</span>
+        <h2>Train hard. Recover. Progress.</h2>
+        <p>Upper • Lower • Upper + Lower Top-up</p>
+      </div>
+      <div class="hero-stats">
+        <div><strong>60–70</strong><span>min</span></div>
+        <div><strong>6</strong><span>weeks</span></div>
+        <div><strong>1–2</strong><span>RIR</span></div>
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-view="workouts">Workouts</button>
+      <button class="tab" data-view="progress">Progress</button>
+      <button class="tab" data-view="guide">Guide</button>
+    </nav>
+
+    <section id="workouts" class="view active">
+      <div id="workoutList"></div>
+    </section>
+
+    <section id="progress" class="view">
+      <div class="card">
+        <h3>Progress overview</h3>
+        <p class="muted">Your best recent performance per exercise.</p>
+        <div id="progressList"></div>
+      </div>
+      <div class="card">
+        <h3>Bodyweight</h3>
+        <div class="inline-form">
+          <input id="bodyweightInput" type="number" step="0.1" placeholder="kg" />
+          <button id="saveBodyweight">Save</button>
+        </div>
+        <div id="bodyweightHistory" class="history"></div>
+      </div>
+    </section>
+
+    <section id="guide" class="view">
+      <div class="card">
+        <h3>Progression rules</h3>
+        <ul>
+          <li>Compounds: finish most sets with 1–2 reps in reserve.</li>
+          <li>Isolation work: final set may reach 0–1 RIR.</li>
+          <li>When all sets hit the top of the rep range at target RIR, add the smallest possible weight increment.</li>
+          <li>Rest 2–3 minutes on compounds and 60–90 seconds on isolations.</li>
+          <li>After week 6, halve the number of sets for one deload week.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Recovery targets</h3>
+        <div class="checkgrid">
+          <label><input type="checkbox"> 7.5–9 h sleep</label>
+          <label><input type="checkbox"> 160–200 g protein</label>
+          <label><input type="checkbox"> Small calorie surplus</label>
+          <label><input type="checkbox"> Hydrated</label>
+          <label><input type="checkbox"> BJJ performance stable</label>
+          <label><input type="checkbox"> No joint irritation</label>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Warm-up</h3>
+        <p>5 minutes easy movement, then 2–4 progressively heavier ramp-up sets for the first compound. Warm-up sets should stay far from failure.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="workoutModal" class="modal hidden">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div>
+          <div id="modalEyebrow" class="eyebrow"></div>
+          <h2 id="modalTitle"></h2>
+        </div>
+        <button id="closeModal" class="ghost">Close</button>
+      </div>
+      <div id="sessionMeta" class="session-meta"></div>
+      <div id="exerciseContainer"></div>
+      <div class="session-actions">
+        <button id="finishWorkout" class="primary">Finish workout</button>
+        <button id="resetWorkout" class="danger">Reset today</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="timer" class="timer hidden">
+    <div>
+      <span>Rest timer</span>
+      <strong id="timerDisplay">01:30</strong>
+    </div>
+    <button id="cancelTimer" class="ghost">Cancel</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
