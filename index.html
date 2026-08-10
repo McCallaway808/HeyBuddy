@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EFE4" />
-<title>HeyBuddy — Version 6.1</title>
+<title>HeyBuddy — Version 7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -75,17 +75,46 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .today-wrap { min-height: calc(100dvh - 110px - var(--safe-bottom)); display: flex; flex-direction: column; }
 .date { margin-top: 17px; color: var(--brown); font-size: 15px; font-weight: 600; }
 .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 22px; }
-.day { position: relative; text-align: center; padding: 8px 0 13px; border-radius: 15px; color: rgba(45,42,36,.36); }
+.day { position: relative; text-align: center; padding: 8px 0 13px; border: 0; border-radius: 15px; color: rgba(45,42,36,.36); background: transparent; cursor: pointer; }
+.day:active { transform: scale(.97); }
 .day.workout { background: rgba(231,220,168,.30); color: rgba(45,42,36,.72); }
 .day .label { display: block; margin-bottom: 6px; font-size: 9px; font-weight: 700; letter-spacing: .08em; }
 .day .number { width: 29px; height: 29px; border-radius: 50%; display: grid; place-items: center; margin: auto; font-size: 12px; font-weight: 700; }
 .day.today .number { border: 1px solid rgba(45,42,36,.70); background: rgba(255,253,248,.5); }
 .day.workout::after { content: ""; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 12px; height: 2px; border-radius: 99px; background: rgba(101,92,75,.48); }
 .day.completed::after { width: 5px; height: 5px; border-radius: 50%; background: var(--brown); }
-.today-centre { margin: auto 0; text-align: center; padding: 52px 0 56px; }
-.opening { margin: 0 0 40px; font-family: Fraunces, Georgia, serif; font-size: clamp(44px,12vw,59px); font-weight: 500; line-height: .98; letter-spacing: -.047em; }
+.today-centre { margin: auto 0; text-align: center; padding: 40px 0 46px; }
+.today-assignment { margin: 0 auto 30px; max-width: 320px; }
+.today-kicker { display: block; margin-bottom: 8px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.today-workout { width: 100%; border: 0; background: transparent; padding: 0; color: var(--ink); }
+.today-workout-name { display: block; font-family: Fraunces, Georgia, serif; font-size: 34px; line-height: 1.05; letter-spacing: -.04em; font-weight: 500; }
+.today-workout-meta { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+.opening { margin: 0 0 30px; font-family: Fraunces, Georgia, serif; font-size: clamp(40px,10vw,51px); font-weight: 500; line-height: .98; letter-spacing: -.047em; }
 .begin { max-width: 282px; margin: auto; }
+.change-today { display: block; margin: 10px auto 0; }
+.schedule-note { margin-top: 10px; color: var(--muted); font-size: 10px; }
 
+/* Adaptive week */
+.schedule-options, .context-actions { display: grid; gap: 10px; margin-top: 18px; }
+.schedule-option, .context-action { width: 100%; min-height: 54px; border: 1px solid var(--line-strong); border-radius: 16px; padding: 13px 14px; background: rgba(255,255,255,.42); text-align: left; font-weight: 750; }
+.schedule-option span, .context-action span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 600; line-height: 1.45; }
+.availability-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin: 18px 0; }
+.availability-day { min-height: 60px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.34); font-weight: 750; }
+.availability-day small { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; font-weight: 650; }
+.availability-day.selected { border-color: var(--sand); background: rgba(231,220,168,.38); box-shadow: inset 0 0 0 1px rgba(201,184,117,.35); }
+.proposal { margin-top: 18px; border-top: 1px solid var(--line); }
+.proposal-row { display: grid; grid-template-columns: 52px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.proposal-day { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.proposal-task { font-size: 13px; font-weight: 750; }
+.proposal-task.recovery { color: var(--muted); font-weight: 600; }
+.schedule-reason { margin: 14px 0 2px; padding: 13px 14px; border-radius: 15px; background: rgba(231,220,168,.25); color: var(--brown); font-size: 12px; line-height: 1.55; }
+.sheet-nav { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+.sheet-back { border:0; background:transparent; padding:6px 0; color:var(--muted); font-size:11px; font-weight:750; }
+.undo-toast { position:absolute; left:18px; right:18px; bottom:calc(18px + var(--safe-bottom)); z-index:35; display:none; align-items:center; justify-content:space-between; gap:12px; padding:13px 14px; border-radius:17px; background:var(--ink); color:var(--white); box-shadow:var(--shadow); }
+.undo-toast.show { display:flex; animation:messageIn .25s ease both; }
+.undo-toast span { font-size:11px; font-weight:650; line-height:1.4; }
+.undo-toast button { border:1px solid rgba(255,255,255,.28); border-radius:999px; background:transparent; color:var(--white); padding:8px 11px; font-size:10px; font-weight:800; }
+.long-press-hint { margin-top:12px; text-align:center; color:var(--muted); font-size:9px; font-weight:650; }
 /* Workout */
 #workout { padding: var(--safe-top) 18px calc(22px + var(--safe-bottom)); }
 .topbar { display: grid; grid-template-columns: 44px 1fr 68px; align-items: center; }
@@ -111,7 +140,10 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 }
 .value-button:active { background: rgba(255,253,248,.67); transform: scale(.99); }
 .value-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; font-size: 10px; font-weight: 800; letter-spacing: .13em; color: var(--muted); }
-.value-label::after { content: "↕"; font-size: 13px; letter-spacing: 0; color: rgba(45,42,36,.42); }
+.value-label::after { content: ""; width: 14px; height: 10px; opacity: .62; background:
+  linear-gradient(var(--brown),var(--brown)) 50% 0/8px 1px no-repeat,
+  linear-gradient(var(--brown),var(--brown)) 50% 50%/12px 1px no-repeat,
+  linear-gradient(var(--brown),var(--brown)) 50% 100%/8px 1px no-repeat; }
 .value-number { display: block; font-size: 62px; line-height: .88; letter-spacing: -.065em; font-weight: 600; }
 .value-hint { display: block; margin-top: 12px; font-size: 9px; font-weight: 700; color: rgba(45,42,36,.42); }
 .action-zone { margin-top: 8px; }
@@ -156,7 +188,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .sheet-section h3 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
 .sheet-section p { margin: 0; color: var(--ink); font-size: 13px; line-height: 1.65; }
 .work-list { margin-top: 18px; }
-.work-row { width: 100%; display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; padding: 14px 4px; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; }
+.work-row { width: 100%; display: grid; touch-action: manipulation; user-select: none; -webkit-user-select: none; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; padding: 14px 4px; border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; }
 .work-row:last-child { border-bottom: 0; }
 .work-row:active { background: rgba(231,220,168,.18); }
 .status { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(45,42,36,.3); }
@@ -212,8 +244,17 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
         <div class="calendar" id="calendar"></div>
       </div>
       <div class="today-centre">
+        <div class="today-assignment">
+          <span class="today-kicker">Today</span>
+          <button class="today-workout" id="todayWorkoutBtn" type="button">
+            <span class="today-workout-name" id="todayWorkoutName">Full Body A</span>
+            <span class="today-workout-meta" id="todayWorkoutMeta">Scheduled workout</span>
+          </button>
+        </div>
         <h1 class="opening">Let’s get to work.</h1>
         <div class="begin"><button class="primary" id="beginBtn">Begin</button></div>
+        <button class="text-button change-today" id="changeTodayBtn" type="button">Change today</button>
+        <div class="schedule-note">Buddy will keep the rest of the week in shape too.</div>
       </div>
     </div>
   </section>
@@ -228,7 +269,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     <div class="workarea">
       <div class="exercise-head">
         <h1 id="exerciseName"></h1>
-        <button class="why-button" id="whyBtn">Why?</button>
+        <button class="why-button" id="whyBtn">Exercise guide</button>
       </div>
       <div class="set-meta" id="setMeta"></div>
       <div class="set-progress" id="setProgress"></div>
@@ -305,8 +346,37 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   <div class="sheet" id="workoutSheet">
     <div class="handle"></div>
     <h2>Today’s workout</h2>
-    <p>Tap any movement to move there. The plan stays put; you choose where to stand.</p>
+    <p>Tap to jump. Press and hold when something needs changing.</p>
     <div class="work-list" id="workList"></div>
+    <div class="long-press-hint">Tap = do · Hold = change</div>
+  </div>
+
+  <div class="sheet" id="daySheet">
+    <div class="handle"></div>
+    <h2 id="daySheetTitle"></h2>
+    <div id="daySheetContent"></div>
+  </div>
+
+  <div class="sheet" id="scheduleSheet">
+    <div class="handle"></div>
+    <div id="scheduleContent"></div>
+  </div>
+
+  <div class="sheet" id="contextSheet">
+    <div class="handle"></div>
+    <h2 id="contextTitle">Exercise</h2>
+    <p>Same workout. Different doorway.</p>
+    <div class="context-actions">
+      <button class="context-action" id="contextSwapBtn" type="button">Swap exercise<span>Choose another movement that can do the same job.</span></button>
+      <button class="context-action" id="contextGuideBtn" type="button">Exercise guide<span>Technique, purpose, alternatives, and evidence.</span></button>
+    </div>
+  </div>
+
+  <div class="sheet" id="swapSheet">
+    <div class="handle"></div>
+    <h2 id="swapTitle">Swap exercise</h2>
+    <p id="swapIntro"></p>
+    <div class="alt-list" id="swapList"></div>
   </div>
 
   <div class="sheet" id="pickerSheet">
@@ -348,6 +418,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     </div>
   </div>
 
+  <div class="undo-toast" id="undoToast"><span id="undoCopy">Week updated.</span><button id="undoBtn" type="button">Undo</button></div>
   <pre id="selfTest"></pre>
 </div>
 
@@ -578,41 +649,105 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     }
   };
 
-  const template = [
-    { slot: "Incline Dumbbell Press", sets: 3, target: [8,10], reps: 9, lastWeight: 32.5, lastReps: 10 },
-    { slot: "Chest-Supported Row", sets: 3, target: [8,12], reps: 10, lastWeight: 45, lastReps: 10 },
-    { slot: "Hack Squat", sets: 3, target: [8,10], reps: 9, lastWeight: 95, lastReps: 10 },
-    { slot: "Seated Leg Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 52.5, lastReps: 13 },
-    { slot: "Cable Lateral Raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 14 },
-    { slot: "Cable Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 22.5, lastReps: 14 }
-  ];
+  const workoutTemplates = {
+    "Full Body A": [
+      { slot: "Incline Dumbbell Press", sets: 3, target: [8,10], reps: 9, lastWeight: 32.5, lastReps: 10 },
+      { slot: "Chest-Supported Row", sets: 3, target: [8,12], reps: 10, lastWeight: 45, lastReps: 10 },
+      { slot: "Hack Squat", sets: 3, target: [8,10], reps: 9, lastWeight: 95, lastReps: 10 },
+      { slot: "Seated Leg Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 52.5, lastReps: 13 },
+      { slot: "Cable Lateral Raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 14 },
+      { slot: "Cable Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 22.5, lastReps: 14 }
+    ],
+    "Full Body B": [
+      { slot: "Flat Dumbbell Press", sets: 3, target: [8,10], reps: 9, lastWeight: 35, lastReps: 9 },
+      { slot: "One-Arm Dumbbell Row", sets: 3, target: [8,12], reps: 10, lastWeight: 32.5, lastReps: 11 },
+      { slot: "Leg Press", sets: 3, target: [8,12], reps: 10, lastWeight: 140, lastReps: 10 },
+      { slot: "Lying Leg Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 45, lastReps: 12 },
+      { slot: "Dumbbell Lateral Raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 15 },
+      { slot: "Preacher Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 25, lastReps: 12 }
+    ],
+    "Full Body C": [
+      { slot: "Smith Incline Press", sets: 3, target: [6,10], reps: 8, lastWeight: 57.5, lastReps: 8 },
+      { slot: "Seated Cable Row", sets: 3, target: [8,12], reps: 10, lastWeight: 52.5, lastReps: 10 },
+      { slot: "Pendulum Squat", sets: 3, target: [8,12], reps: 9, lastWeight: 80, lastReps: 9 },
+      { slot: "Nordic Curl", sets: 3, target: [6,10], reps: 7, lastWeight: 0, lastReps: 7 },
+      { slot: "Machine Lateral Raise", sets: 3, target: [12,20], reps: 14, lastWeight: 25, lastReps: 14 },
+      { slot: "Machine Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 30, lastReps: 12 }
+    ]
+  };
+
+  const WEEK_PLAN_KEY = "heybuddy_week_plan_v7";
+  const dayLabels = ["M","T","W","T","F","S","S"];
+  const dayNames = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const fullDayNames = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+  function mondayOf(date = new Date()) {
+    const monday = new Date(date);
+    monday.setHours(0,0,0,0);
+    monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
+    return monday;
+  }
+  function currentDayIndex() { return (new Date().getDay() + 6) % 7; }
+  function weekId() {
+    const monday = mondayOf();
+    return `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,"0")}-${String(monday.getDate()).padStart(2,"0")}`;
+  }
+  function defaultWeekPlan() {
+    return [
+      { day: 0, workout: "Full Body A" },
+      { day: 2, workout: "Full Body B" },
+      { day: 4, workout: "Full Body C" }
+    ];
+  }
+  function loadWeekPlan() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(WEEK_PLAN_KEY) || "null");
+      if (stored && stored.weekId === weekId() && Array.isArray(stored.plan)) return stored.plan;
+    } catch {}
+    return defaultWeekPlan();
+  }
+  function saveWeekPlan(plan) { try { localStorage.setItem(WEEK_PLAN_KEY, JSON.stringify({ weekId: weekId(), plan })); } catch {} }
+  function planForDay(dayIndex, plan = state.weekPlan) { return plan.find((entry) => entry.day === dayIndex) || null; }
 
   function loadDefaultSwaps() {
     try { return JSON.parse(localStorage.getItem(DEFAULT_SWAP_KEY) || "{}"); }
     catch { return {}; }
   }
 
-  const savedSwaps = loadDefaultSwaps();
-  const exercises = template.map((item) => {
-    const chosenName = savedSwaps[item.slot] && library[savedSwaps[item.slot]] ? savedSwaps[item.slot] : item.slot;
-    const data = library[chosenName];
-    return {
-      slot: item.slot,
-      activeName: chosenName,
-      sets: item.sets,
-      target: item.target,
-      lastWeight: item.lastWeight,
-      lastReps: item.lastReps,
-      currentWeight: data.defaultWeight,
-      currentReps: item.reps,
-      completedSets: 0,
-      setLogs: [],
-      completed: false,
-      pendingSwap: chosenName !== item.slot ? { from: item.slot, to: chosenName, inherited: true } : null
-    };
-  });
+  function createExercisesForWorkout(workoutName) {
+    const savedSwaps = loadDefaultSwaps();
+    const template = workoutTemplates[workoutName] || workoutTemplates["Full Body A"];
+    return template.map((item) => {
+      const chosenName = savedSwaps[item.slot] && library[savedSwaps[item.slot]] ? savedSwaps[item.slot] : item.slot;
+      const data = library[chosenName];
+      return {
+        slot: item.slot,
+        activeName: chosenName,
+        sets: item.sets,
+        target: item.target,
+        lastWeight: item.lastWeight,
+        lastReps: item.lastReps,
+        currentWeight: data.defaultWeight,
+        currentReps: item.reps,
+        completedSets: 0,
+        setLogs: [],
+        completed: false,
+        pendingSwap: chosenName !== item.slot ? { from: item.slot, to: chosenName, inherited: true } : null
+      };
+    });
+  }
+
+  let activeWorkoutName = "Full Body A";
+  let exercises = createExercisesForWorkout(activeWorkoutName);
 
   const state = {
+    weekPlan: loadWeekPlan(),
+    previousWeekPlan: null,
+    proposedWeekPlan: null,
+    deferredWorkout: null,
+    scheduleWizard: null,
+    contextExerciseIndex: null,
+    suppressWorkClick: false,
     exerciseIndex: 0,
     startedAt: null,
     sessionInterval: null,
@@ -683,22 +818,267 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
   function setupDate() {
     const today = new Date();
+    const monday = mondayOf(today);
+    const todayIndex = currentDayIndex();
     $("todayDate").textContent = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(today);
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-    const workoutDays = [0, 2, 4];
     $("calendar").innerHTML = "";
     for (let index = 0; index < 7; index += 1) {
       const date = new Date(monday);
       date.setDate(monday.getDate() + index);
-      const element = document.createElement("div");
-      const isWorkout = workoutDays.includes(index);
-      const isToday = date.toDateString() === today.toDateString();
-      const isPastWorkout = isWorkout && index < ((today.getDay() + 6) % 7);
+      const workout = planForDay(index);
+      const element = document.createElement("button");
+      element.type = "button";
+      element.dataset.dayIndex = index;
+      const isWorkout = Boolean(workout);
+      const isToday = index === todayIndex;
+      const isPastWorkout = isWorkout && index < todayIndex;
       element.className = `day${isWorkout ? " workout" : ""}${isToday ? " today" : ""}${isPastWorkout ? " completed" : ""}`;
-      element.innerHTML = `<span class="label">${["M","T","W","T","F","S","S"][index]}</span><span class="number">${date.getDate()}</span>`;
+      element.innerHTML = `<span class="label">${dayLabels[index]}</span><span class="number">${date.getDate()}</span>`;
+      element.addEventListener("click", () => openDayDetail(index));
       $("calendar").appendChild(element);
     }
+    renderTodayAssignment();
+  }
+
+  function renderTodayAssignment() {
+    const entry = planForDay(currentDayIndex());
+    if (entry) {
+      $("todayWorkoutName").textContent = entry.workout;
+      $("todayWorkoutMeta").textContent = `${workoutTemplates[entry.workout]?.length || 6} exercises · scheduled workout`;
+      $("beginBtn").textContent = "Begin";
+    } else {
+      $("todayWorkoutName").textContent = "Recovery day";
+      $("todayWorkoutMeta").textContent = "No workout scheduled";
+      $("beginBtn").textContent = "View today";
+    }
+  }
+
+  function dayDate(dayIndex) {
+    const date = mondayOf();
+    date.setDate(date.getDate() + dayIndex);
+    return date;
+  }
+
+  function nextPlanAfter(dayIndex, plan = state.weekPlan) {
+    return [...plan].filter((entry) => entry.day > dayIndex).sort((a,b) => a.day - b.day)[0] || null;
+  }
+
+  function openDayDetail(dayIndex) {
+    const date = dayDate(dayIndex);
+    const entry = planForDay(dayIndex);
+    $("daySheetTitle").textContent = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(date);
+    if (entry) {
+      const count = workoutTemplates[entry.workout]?.length || 6;
+      $("daySheetContent").innerHTML = `
+        <div class="sheet-section"><h3>Planned</h3><p><strong>${entry.workout}</strong><br>${count} exercises</p></div>
+        <div class="sheet-section"><h3>Buddy's read</h3><p>This is one of the working days. Nothing mysterious hiding behind the curtains.</p></div>`;
+    } else {
+      const next = nextPlanAfter(dayIndex);
+      $("daySheetContent").innerHTML = `
+        <div class="sheet-section"><h3>Recovery day</h3><p>No lifting here. The dumbbells can hold their own meeting.</p></div>
+        <div class="sheet-section"><h3>Next up</h3><p>${next ? `${fullDayNames[next.day]} · ${next.workout}` : "The training week is done."}</p></div>`;
+    }
+    openSheet("daySheet");
+  }
+
+  function openScheduleStart() {
+    state.scheduleWizard = { mode: null, selectedWorkout: null, availability: new Set() };
+    renderScheduleStart();
+    openSheet("scheduleSheet");
+  }
+
+  function renderScheduleStart() {
+    const todayEntry = planForDay(currentDayIndex());
+    $("scheduleContent").innerHTML = `
+      <h2>Plans moved around?</h2>
+      <p>Give me the week you actually have. Calendars get ambitious when nobody is watching.</p>
+      <div class="schedule-options">
+        ${todayEntry ? `<button class="schedule-option" type="button" data-schedule-mode="cant_today">I can’t train today<span>Move today’s session and repair the rest of the week.</span></button>` : ""}
+        ${todayEntry ? `<button class="schedule-option" type="button" data-schedule-mode="different_today">I want another workout today<span>Use another session from this week and reorganise what remains.</span></button>` : ""}
+        <button class="schedule-option" type="button" data-schedule-mode="availability_changed">My availability changed<span>Tell Buddy which days still work and let him redraw the week.</span></button>
+      </div>`;
+    $("scheduleContent").querySelectorAll("[data-schedule-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.scheduleWizard.mode = button.dataset.scheduleMode;
+        if (state.scheduleWizard.mode === "different_today") renderWorkoutChoice();
+        else renderAvailabilityStep();
+      });
+    });
+  }
+
+  function renderWorkoutChoice() {
+    const todayIndex = currentDayIndex();
+    const todayEntry = planForDay(todayIndex);
+    const remaining = [...state.weekPlan].filter((entry) => entry.day >= todayIndex && (!todayEntry || entry.workout !== todayEntry.workout));
+    $("scheduleContent").innerHTML = `
+      <div class="sheet-nav"><button class="sheet-back" id="scheduleBack" type="button">← Back</button></div>
+      <h2>What are we doing today?</h2>
+      <p>Pick one from this week. I’ll deal with the furniture after.</p>
+      <div class="schedule-options">
+        ${remaining.map((entry) => `<button class="schedule-option" type="button" data-workout-choice="${entry.workout}">${entry.workout}<span>Currently planned for ${fullDayNames[entry.day]}.</span></button>`).join("")}
+      </div>`;
+    $("scheduleBack").onclick = renderScheduleStart;
+    $("scheduleContent").querySelectorAll("[data-workout-choice]").forEach((button) => {
+      button.onclick = () => { state.scheduleWizard.selectedWorkout = button.dataset.workoutChoice; renderAvailabilityStep(); };
+    });
+  }
+
+  function renderAvailabilityStep() {
+    const todayIndex = currentDayIndex();
+    const mode = state.scheduleWizard.mode;
+    const start = mode === "cant_today" || mode === "different_today" ? todayIndex + 1 : todayIndex;
+    state.scheduleWizard.availability = new Set(Array.from({length: Math.max(0, 7-start)}, (_,i) => start+i));
+    $("scheduleContent").innerHTML = `
+      <div class="sheet-nav"><button class="sheet-back" id="scheduleBack" type="button">← Back</button></div>
+      <h2>Which days can still work?</h2>
+      <p>Select the days you could realistically train. Buddy will choose the spacing.</p>
+      <div class="availability-grid" id="availabilityGrid"></div>
+      <button class="primary" id="buildWeekBtn" type="button">Build the week</button>`;
+    $("scheduleBack").onclick = mode === "different_today" ? renderWorkoutChoice : renderScheduleStart;
+    const grid = $("availabilityGrid");
+    for (let day = start; day < 7; day += 1) {
+      const date = dayDate(day);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "availability-day selected";
+      button.dataset.availabilityDay = day;
+      button.innerHTML = `${fullDayNames[day]}<small>${date.getDate()} ${date.toLocaleString("en-GB", {month:"short"})}</small>`;
+      button.onclick = () => {
+        if (state.scheduleWizard.availability.has(day)) state.scheduleWizard.availability.delete(day);
+        else state.scheduleWizard.availability.add(day);
+        button.classList.toggle("selected", state.scheduleWizard.availability.has(day));
+      };
+      grid.appendChild(button);
+    }
+    $("buildWeekBtn").onclick = renderScheduleProposal;
+  }
+
+  function combinations(values, choose) {
+    const result = [];
+    function walk(start, picked) {
+      if (picked.length === choose) { result.push([...picked]); return; }
+      for (let i = start; i < values.length; i += 1) { picked.push(values[i]); walk(i+1, picked); picked.pop(); }
+    }
+    if (choose === 0) return [[]];
+    walk(0, []);
+    return result;
+  }
+
+  function chooseScheduleDays(candidates, sessions, fixedDays = [], originalDays = []) {
+    if (!sessions) return [];
+    if (candidates.length <= sessions) return [...candidates].sort((a,b) => a-b);
+    let best = null;
+    let bestScore = Infinity;
+    combinations([...candidates].sort((a,b) => a-b), sessions).forEach((combo) => {
+      const all = [...fixedDays, ...combo].sort((a,b) => a-b);
+      let score = 0;
+      for (let i=1;i<all.length;i+=1) {
+        const gap = all[i]-all[i-1];
+        if (gap === 1) score += 45;
+        else if (gap === 2) score += 0;
+        else score += Math.abs(gap-2) * 3;
+      }
+      combo.forEach((day, index) => { if (Number.isInteger(originalDays[index])) score += Math.abs(day-originalDays[index]) * .75; });
+      if (score < bestScore) { bestScore = score; best = combo; }
+    });
+    return best || candidates.slice(0,sessions);
+  }
+
+  function buildWeekProposal() {
+    const todayIndex = currentDayIndex();
+    const mode = state.scheduleWizard.mode;
+    const currentPlan = [...state.weekPlan].sort((a,b) => a.day-b.day);
+    const past = currentPlan.filter((entry) => entry.day < todayIndex);
+    const remaining = currentPlan.filter((entry) => entry.day >= todayIndex);
+    let fixedToday = null;
+    let sessionEntries = [...remaining];
+
+    if (mode === "different_today" && state.scheduleWizard.selectedWorkout) {
+      fixedToday = { day: todayIndex, workout: state.scheduleWizard.selectedWorkout };
+      let removed = false;
+      sessionEntries = remaining.filter((entry) => {
+        if (!removed && entry.workout === state.scheduleWizard.selectedWorkout) { removed = true; return false; }
+        return true;
+      }).filter((entry) => entry.day !== todayIndex || entry.workout !== state.scheduleWizard.selectedWorkout);
+      const originalToday = remaining.find((entry) => entry.day === todayIndex);
+      if (originalToday && originalToday.workout !== fixedToday.workout && !sessionEntries.some((entry) => entry.workout === originalToday.workout)) sessionEntries.unshift(originalToday);
+    }
+
+    const candidateDays = [...state.scheduleWizard.availability].sort((a,b) => a-b).filter((day) => !fixedToday || day !== todayIndex);
+    const numberToSchedule = Math.min(sessionEntries.length, candidateDays.length);
+    const chosenDays = chooseScheduleDays(candidateDays, numberToSchedule, fixedToday ? [todayIndex] : [], sessionEntries.map((entry) => entry.day));
+    const scheduled = sessionEntries.slice(0, chosenDays.length).map((entry,index) => ({ day: chosenDays[index], workout: entry.workout }));
+    const deferred = sessionEntries.slice(chosenDays.length).map((entry) => entry.workout);
+    const plan = [...past, ...(fixedToday ? [fixedToday] : []), ...scheduled].sort((a,b) => a.day-b.day);
+    return { plan, deferred };
+  }
+
+  function proposalReason(plan, deferred) {
+    const futureDays = plan.filter((entry) => entry.day >= currentDayIndex()).map((entry) => entry.day).sort((a,b) => a-b);
+    const hasBackToBack = futureDays.some((day,index) => index > 0 && day-futureDays[index-1] === 1);
+    if (deferred.length) return `I can fit ${futureDays.length} quality session${futureDays.length === 1 ? "" : "s"} into the days you gave me. ${deferred.join(", ")} rolls forward. Stuffing every workout into the same cupboard would be gym-flavoured nonsense.`;
+    if (hasBackToBack) return "This is the cleanest version of the week you gave me. There’s one back-to-back pair; not perfect, but better than asking Friday to become three separate days.";
+    return "This keeps the work in order and leaves recovery between sessions. Calendar repaired. Nobody has to sleep beside the squat rack.";
+  }
+
+  function renderScheduleProposal() {
+    const result = buildWeekProposal();
+    state.proposedWeekPlan = result.plan;
+    state.deferredWorkout = result.deferred;
+    $("scheduleContent").innerHTML = `
+      <div class="sheet-nav"><button class="sheet-back" id="scheduleBack" type="button">← Back</button></div>
+      <h2>Here’s the repaired week.</h2>
+      <p>Nothing gets moved until you say so.</p>
+      <div class="proposal">
+        ${Array.from({length:7}, (_,day) => {
+          const entry = result.plan.find((item) => item.day === day);
+          return `<div class="proposal-row"><div class="proposal-day">${dayNames[day]}</div><div class="proposal-task${entry ? "" : " recovery"}">${entry ? entry.workout : "Recovery"}</div></div>`;
+        }).join("")}
+      </div>
+      <div class="schedule-reason">${proposalReason(result.plan, result.deferred)}</div>
+      <button class="primary" id="applyWeekBtn" type="button" style="margin-top:16px">Apply changes</button>`;
+    $("scheduleBack").onclick = renderAvailabilityStep;
+    $("applyWeekBtn").onclick = applyWeekProposal;
+  }
+
+  function applyWeekProposal() {
+    if (!state.proposedWeekPlan) return;
+    state.previousWeekPlan = state.weekPlan.map((entry) => ({...entry}));
+    state.weekPlan = state.proposedWeekPlan.map((entry) => ({...entry}));
+    saveWeekPlan(state.weekPlan);
+    closeSheets(false);
+    setupDate();
+    showUndoToast();
+  }
+
+  function showUndoToast() {
+    $("undoCopy").textContent = state.deferredWorkout?.length ? "Week updated. One session rolls forward." : "Week updated. The calendar has stopped arguing.";
+    $("undoToast").classList.add("show");
+    clearTimeout(state.undoTimer);
+    state.undoTimer = setTimeout(() => $("undoToast").classList.remove("show"), 6000);
+  }
+
+  function undoWeekChange() {
+    if (!state.previousWeekPlan) return;
+    state.weekPlan = state.previousWeekPlan.map((entry) => ({...entry}));
+    saveWeekPlan(state.weekPlan);
+    state.previousWeekPlan = null;
+    $("undoToast").classList.remove("show");
+    setupDate();
+  }
+
+  function resetSessionForWorkout(workoutName) {
+    activeWorkoutName = workoutName;
+    exercises = createExercisesForWorkout(workoutName);
+    state.exerciseIndex = 0;
+    state.setsLogged = 0;
+    state.completedExercises = 0;
+    state.events = [];
+    state.observationsShown = new Set();
+    state.observationCount = 0;
+    state.currentObservation = null;
+    state.longWorkoutTriggered = false;
+    $("sessionTime").textContent = "00:00";
   }
 
   function startSessionTimer() {
@@ -714,10 +1094,16 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   }
 
   function beginWorkout() {
+    const todayEntry = planForDay(currentDayIndex());
+    if (!todayEntry) {
+      showMessage({ text: "No lifting today. The dumbbells can hold their own meeting.", duration: 2000, showInfo: false, continuation: () => {} });
+      return;
+    }
+    resetSessionForWorkout(todayEntry.workout);
     state.startedAt = Date.now();
     startSessionTimer();
     showMessage({
-      text: "First one in the building. Let’s see what the furniture does.",
+      text: `${todayEntry.workout}. First one through the door gets the weird chair.`,
       duration: 2000,
       showInfo: false,
       continuation: () => {
@@ -769,8 +1155,36 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
         </button>`;
     }).join("");
     $("workList").querySelectorAll("[data-jump-index]").forEach((button) => {
-      button.addEventListener("click", () => jumpToExercise(Number(button.dataset.jumpIndex)));
+      const index = Number(button.dataset.jumpIndex);
+      let timer = null;
+      let startX = 0;
+      let startY = 0;
+      const cancel = () => { clearTimeout(timer); timer = null; };
+      button.addEventListener("pointerdown", (event) => {
+        startX = event.clientX; startY = event.clientY;
+        timer = setTimeout(() => {
+          state.suppressWorkClick = true;
+          openExerciseContext(index);
+          if (navigator.vibrate) navigator.vibrate(16);
+        }, 520);
+      });
+      button.addEventListener("pointermove", (event) => {
+        if (Math.abs(event.clientX-startX) > 10 || Math.abs(event.clientY-startY) > 10) cancel();
+      });
+      ["pointerup","pointercancel","pointerleave"].forEach((name) => button.addEventListener(name, cancel));
+      button.addEventListener("contextmenu", (event) => event.preventDefault());
+      button.addEventListener("click", (event) => {
+        if (state.suppressWorkClick) { state.suppressWorkClick = false; event.preventDefault(); return; }
+        jumpToExercise(index);
+      });
     });
+  }
+
+  function openExerciseContext(index) {
+    if (!Number.isInteger(index) || !exercises[index]) return;
+    state.contextExerciseIndex = index;
+    $("contextTitle").textContent = library[exercises[index].activeName].name;
+    openSheet("contextSheet");
   }
 
   function jumpToExercise(index) {
@@ -978,16 +1392,20 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     $("doneTime").textContent = formatTime(elapsed);
     $("doneExercises").textContent = state.completedExercises;
     $("doneSets").textContent = state.setsLogged;
-    $("nextWorkout").textContent = "Next time · Full Body B · We’ll give the hamstrings and back a different kind of paperwork.";
+    const next = nextPlanAfter(currentDayIndex());
+    $("nextWorkout").textContent = next
+      ? `Next time · ${fullDayNames[next.day]} · ${next.workout}`
+      : "That’s the training week. The rest of it can mind its own business.";
     showScreen("done");
   }
 
-  function openWhy() {
-    const exercise = currentExercise();
-    const data = currentData();
-    $("whyTitle").textContent = data.name;
+  function openGuide(index = state.exerciseIndex) {
+    if (!Number.isInteger(index) || !exercises[index]) return;
+    const exercise = exercises[index];
+    const data = library[exercise.activeName];
+    $("whyTitle").textContent = "Exercise guide";
     $("whyContent").innerHTML = `
-      <div class="sheet-section"><h3>Why this exercise?</h3><p>${data.purpose}</p></div>
+      <div class="sheet-section"><h3>${data.name}</h3><p>${data.purpose}</p></div>
       <div class="sheet-section"><h3>Technique</h3><p>${data.cues.map((cue) => `• ${cue}`).join("<br>")}</p></div>
       <div class="sheet-section"><h3>Common mistakes</h3><p>${data.mistakes.map((mistake) => `• ${mistake}`).join("<br>")}</p></div>
       <div class="sheet-section"><h3>Muscles</h3><p>${data.muscles}</p></div>
@@ -995,14 +1413,27 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
       <div class="sheet-section"><h3>Alternatives</h3><div class="alt-list">${data.alternatives.map((name) => `<button class="alt-button" type="button" data-alternative="${name}"><span>${name}</span><span>Use →</span></button>`).join("")}</div></div>
       <div class="sheet-section"><h3>Evidence</h3><p>${data.evidence}</p></div>`;
     $("whyContent").querySelectorAll("[data-alternative]").forEach((button) => {
-      button.addEventListener("click", () => selectAlternative(button.dataset.alternative));
+      button.addEventListener("click", () => selectAlternative(button.dataset.alternative, index));
     });
     openSheet("whySheet");
   }
 
-  function selectAlternative(name) {
-    if (!library[name]) return;
-    const exercise = currentExercise();
+  function openSwapSheet(index) {
+    if (!Number.isInteger(index) || !exercises[index]) return;
+    const data = library[exercises[index].activeName];
+    state.contextExerciseIndex = index;
+    $("swapTitle").textContent = `Swap ${data.name}`;
+    $("swapIntro").textContent = "Same movement job, different piece of equipment or setup.";
+    $("swapList").innerHTML = data.alternatives.map((name) => `<button class="alt-button" type="button" data-swap-alt="${name}"><span>${name}</span><span>Use →</span></button>`).join("");
+    $("swapList").querySelectorAll("[data-swap-alt]").forEach((button) => {
+      button.onclick = () => selectAlternative(button.dataset.swapAlt, index);
+    });
+    openSheet("swapSheet");
+  }
+
+  function selectAlternative(name, index = state.exerciseIndex) {
+    if (!library[name] || !exercises[index]) return;
+    const exercise = exercises[index];
     const previousName = exercise.activeName;
     exercise.activeName = name;
     exercise.currentWeight = library[name].defaultWeight;
@@ -1064,9 +1495,14 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
   function bindEvents() {
     $("beginBtn").addEventListener("click", beginWorkout);
+    $("todayWorkoutBtn").addEventListener("click", () => openDayDetail(currentDayIndex()));
+    $("changeTodayBtn").addEventListener("click", openScheduleStart);
+    $("undoBtn").addEventListener("click", undoWeekChange);
     $("backBtn").addEventListener("click", () => showScreen("today"));
     $("previewBtn").addEventListener("click", () => openSheet("workoutSheet"));
-    $("whyBtn").addEventListener("click", (event) => { event.stopPropagation(); openWhy(); });
+    $("whyBtn").addEventListener("click", (event) => { event.stopPropagation(); openGuide(state.exerciseIndex); });
+    $("contextSwapBtn").addEventListener("click", () => openSwapSheet(state.contextExerciseIndex));
+    $("contextGuideBtn").addEventListener("click", () => openGuide(state.contextExerciseIndex));
     $("weightButton").addEventListener("click", openPicker);
     $("repsButton").addEventListener("click", openPicker);
     $("completeSetBtn").addEventListener("click", completeSet);
