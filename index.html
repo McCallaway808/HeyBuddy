@@ -927,12 +927,13 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     const todayIndex = currentDayIndex();
     const mode = state.scheduleWizard.mode;
     const start = mode === "cant_today" || mode === "different_today" ? todayIndex + 1 : todayIndex;
-    state.scheduleWizard.availability = new Set(Array.from({length: Math.max(0, 7-start)}, (_,i) => start+i));
+    state.scheduleWizard.availability = new Set();
     $("scheduleContent").innerHTML = `
       <div class="sheet-nav"><button class="sheet-back" id="scheduleBack" type="button">← Back</button></div>
       <h2>Which days can still work?</h2>
-      <p>Select the days you could realistically train. Buddy will choose the spacing.</p>
+      <p>Tap the days you could realistically train. Nothing is selected yet, so what you choose is what Buddy will work with.</p>
       <div class="availability-grid" id="availabilityGrid"></div>
+      <div id="availabilitySummary" style="margin:-6px 0 16px;color:var(--muted);font-size:10px;font-weight:700;">No days selected</div>
       <button class="primary" id="buildWeekBtn" type="button">Build the week</button>`;
     $("scheduleBack").onclick = mode === "different_today" ? renderWorkoutChoice : renderScheduleStart;
     const grid = $("availabilityGrid");
@@ -940,13 +941,17 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
       const date = dayDate(day);
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "availability-day selected";
+      button.className = "availability-day";
       button.dataset.availabilityDay = day;
       button.innerHTML = `${fullDayNames[day]}<small>${date.getDate()} ${date.toLocaleString("en-GB", {month:"short"})}</small>`;
       button.onclick = () => {
         if (state.scheduleWizard.availability.has(day)) state.scheduleWizard.availability.delete(day);
         else state.scheduleWizard.availability.add(day);
         button.classList.toggle("selected", state.scheduleWizard.availability.has(day));
+        const selected = [...state.scheduleWizard.availability].sort((a,b) => a-b);
+        $("availabilitySummary").textContent = selected.length
+          ? `${selected.length} day${selected.length === 1 ? "" : "s"} selected · ${selected.map((item) => fullDayNames[item]).join(", ")}`
+          : "No days selected";
       };
       grid.appendChild(button);
     }
