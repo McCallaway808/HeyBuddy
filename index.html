@@ -422,257 +422,138 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   <pre id="selfTest"></pre>
 </div>
 
+<script src="data/knowledge.js"></script>
 <script>
 (() => {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
-  const DEFAULT_SWAP_KEY = "heybuddy_default_swaps_v61";
+  const DEFAULT_SWAP_KEY = "heybuddy_default_swaps_v81";
+  const KB = window.HEYBUDDY_KNOWLEDGE;
 
-  const library = {
-    "Incline Dumbbell Press": {
-      name: "Incline Dumbbell Press", pattern: "Incline push", defaultWeight: 35,
-      muscles: "Upper chest, front delts, triceps",
-      purpose: "This gives the upper chest a strong stimulus while letting each shoulder move more freely than a fixed barbell path.",
-      cues: ["Set the bench around 20–30°.", "Keep the shoulder blades settled against the bench.", "Lower with control, then press slightly inward."],
-      mistakes: ["Setting the bench so steep that the shoulders take over.", "Letting the elbows drift too far behind the body.", "Turning the final reps into a full-body weather event."],
-      alternatives: ["Smith Incline Press", "Low-Incline Machine Press", "Flat Dumbbell Press"],
-      evidence: "A modest incline can increase emphasis on the clavicular fibres of the chest while still allowing meaningful loading. The exact angle matters less than using a repeatable setup and progressing it over time.",
-      tags: ["Hypertrophy", "Strength"]
-    },
-    "Smith Incline Press": {
-      name: "Smith Incline Press", pattern: "Incline push", defaultWeight: 60,
-      muscles: "Upper chest, front delts, triceps",
-      purpose: "The fixed path removes some stability demands, which can make it easier to push the target muscles close to failure.",
-      cues: ["Set the bench so the bar reaches the upper chest.", "Keep your feet planted and shoulder blades settled.", "Control the descent before pressing through the same path."],
-      mistakes: ["Placing the bench too far forward or backward.", "Bouncing the bar from the chest.", "Letting the shoulders roll forward at the bottom."],
-      alternatives: ["Incline Dumbbell Press", "Low-Incline Machine Press", "Flat Dumbbell Press"],
-      evidence: "Stable pressing variations can reduce coordination demands and support high local effort, which makes them useful for hypertrophy-oriented training.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Low-Incline Machine Press": {
-      name: "Low-Incline Machine Press", pattern: "Incline push", defaultWeight: 55,
-      muscles: "Upper chest, front delts, triceps",
-      purpose: "A stable machine press lets the upper chest work hard without asking your balance to join the payroll.",
-      cues: ["Align the handles with the upper chest.", "Keep the torso and shoulder blades supported.", "Press smoothly without locking the shoulders forward."],
-      mistakes: ["Using a seat height that turns the movement into a shoulder press.", "Cutting the bottom range short.", "Letting the weight stack crash between reps."],
-      alternatives: ["Incline Dumbbell Press", "Smith Incline Press", "Flat Dumbbell Press"],
-      evidence: "Machine presses provide a repeatable path and can be loaded close to failure with low stability demands.", tags: ["Hypertrophy"]
-    },
-    "Flat Dumbbell Press": {
-      name: "Flat Dumbbell Press", pattern: "Horizontal push", defaultWeight: 37.5,
-      muscles: "Chest, front delts, triceps",
-      purpose: "This shifts some emphasis toward the overall chest while preserving the freedom of independent dumbbells.",
-      cues: ["Keep the shoulder blades settled.", "Lower the dumbbells under control.", "Press up and slightly inward."],
-      mistakes: ["Flaring the elbows excessively.", "Losing upper-back tension.", "Using a range you cannot control."],
-      alternatives: ["Incline Dumbbell Press", "Smith Incline Press", "Machine Chest Press"],
-      evidence: "Horizontal pressing is an effective way to train the chest and triceps when progressed through a stable range of motion.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Chest-Supported Row": {
-      name: "Chest-Supported Row", pattern: "Horizontal pull", defaultWeight: 45,
-      muscles: "Lats, upper back, rear delts, biceps",
-      purpose: "The chest support removes lower-back fatigue, so the upper back can do the job without borrowing a spine from tomorrow.",
-      cues: ["Keep the chest planted throughout the set.", "Drive the elbows back instead of shrugging.", "Pause briefly when the handles reach the torso."],
-      mistakes: ["Lifting the chest away from the pad.", "Turning the movement into a shrug.", "Dropping the weight instead of controlling the return."],
-      alternatives: ["Seated Cable Row", "Machine Row", "One-Arm Dumbbell Row"],
-      evidence: "Stable rowing variations can help maintain output and make the target musculature easier to load consistently.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Seated Cable Row": {
-      name: "Seated Cable Row", pattern: "Horizontal pull", defaultWeight: 55,
-      muscles: "Lats, upper back, rear delts, biceps",
-      purpose: "The cable gives a repeatable horizontal pull while allowing small changes in torso and elbow path.",
-      cues: ["Stay tall through the torso.", "Pull the elbows toward the hips or ribs.", "Control the reach forward without collapsing."],
-      mistakes: ["Rocking back and forth to move the stack.", "Shrugging the shoulders toward the ears.", "Cutting the stretched position short."],
-      alternatives: ["Chest-Supported Row", "Machine Row", "One-Arm Dumbbell Row"],
-      evidence: "Cable rows maintain external resistance through the pull and are easy to standardise across sessions.", tags: ["Hypertrophy"]
-    },
-    "Machine Row": {
-      name: "Machine Row", pattern: "Horizontal pull", defaultWeight: 60,
-      muscles: "Upper back, lats, rear delts, biceps",
-      purpose: "A fixed setup makes the row repeatable and lets you concentrate on moving the elbows rather than supervising the rest of your body.",
-      cues: ["Adjust the seat so the handles line up comfortably.", "Keep the chest supported if the machine allows it.", "Pull and pause without shrugging."],
-      mistakes: ["Using momentum from the torso.", "Letting the shoulders roll forward under load.", "Rushing the return."],
-      alternatives: ["Chest-Supported Row", "Seated Cable Row", "One-Arm Dumbbell Row"],
-      evidence: "Stable machine rows can be useful for hypertrophy because they support consistent execution near muscular failure.", tags: ["Hypertrophy"]
-    },
-    "One-Arm Dumbbell Row": {
-      name: "One-Arm Dumbbell Row", pattern: "Horizontal pull", defaultWeight: 35,
-      muscles: "Lats, upper back, rear delts, biceps",
-      purpose: "The one-arm setup allows a long pulling range and makes side-to-side differences difficult to hide behind a group project.",
-      cues: ["Brace the free hand firmly.", "Pull the elbow toward the hip.", "Keep the torso mostly still."],
-      mistakes: ["Rotating the entire torso.", "Shrugging at the top.", "Dropping the shoulder at the bottom without control."],
-      alternatives: ["Chest-Supported Row", "Seated Cable Row", "Machine Row"],
-      evidence: "Unilateral rows can provide a large range of motion and allow each side to be loaded independently.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Hack Squat": {
-      name: "Hack Squat", pattern: "Squat", defaultWeight: 100,
-      muscles: "Quads, glutes, adductors",
-      purpose: "A stable squat pattern lets us load the legs hard without asking balance to run the meeting.",
-      cues: ["Keep pressure through the whole foot.", "Let the knees travel naturally with the toes.", "Control the bottom position before driving up."],
-      mistakes: ["Letting the heels lift.", "Cutting depth short only because the weight got ambitious.", "Locking the knees aggressively at the top."],
-      alternatives: ["Leg Press", "Smith Squat", "Pendulum Squat"],
-      evidence: "Stable machine squat patterns support high local effort with less technical variability, making them useful hypertrophy tools.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Leg Press": {
-      name: "Leg Press", pattern: "Squat", defaultWeight: 160,
-      muscles: "Quads, glutes, adductors",
-      purpose: "The leg press provides a stable way to load knee and hip extension without turning balance into a side quest.",
-      cues: ["Keep the full foot on the platform.", "Lower until the pelvis is about to roll.", "Drive through the platform without locking out violently."],
-      mistakes: ["Using a range that causes the lower back to round.", "Placing the feet so high that the quads leave the building.", "Bouncing out of the bottom."],
-      alternatives: ["Hack Squat", "Smith Squat", "Pendulum Squat"],
-      evidence: "Leg presses can produce substantial quadriceps and glute loading with low balance requirements.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Smith Squat": {
-      name: "Smith Squat", pattern: "Squat", defaultWeight: 80,
-      muscles: "Quads, glutes, adductors",
-      purpose: "The fixed bar path lets you choose a stance and repeat it without the bar taking a sightseeing tour.",
-      cues: ["Place the feet where the torso can stay comfortable.", "Keep the whole foot loaded.", "Control the descent and drive through the same path."],
-      mistakes: ["Forcing a stance that does not match the machine path.", "Relaxing at the bottom.", "Rushing the descent."],
-      alternatives: ["Hack Squat", "Leg Press", "Pendulum Squat"],
-      evidence: "Smith squats can be loaded heavily while reducing balance demands, which can be useful for hypertrophy and strength practice.", tags: ["Hypertrophy", "Strength"]
-    },
-    "Pendulum Squat": {
-      name: "Pendulum Squat", pattern: "Squat", defaultWeight: 60,
-      muscles: "Quads, glutes, adductors",
-      purpose: "The machine keeps the path stable and often allows deep knee flexion without your balance calling an emergency meeting.",
-      cues: ["Keep the feet planted.", "Descend under control.", "Drive through the platform while keeping the hips against the pad."],
-      mistakes: ["Using more depth than you can control.", "Letting the knees collapse inward.", "Bouncing from the bottom."],
-      alternatives: ["Hack Squat", "Leg Press", "Smith Squat"],
-      evidence: "Deep, stable squat patterns can train the quadriceps through a large range while supporting high effort.", tags: ["Hypertrophy"]
-    },
-    "Seated Leg Curl": {
-      name: "Seated Leg Curl", pattern: "Knee flexion", defaultWeight: 55,
-      muscles: "Hamstrings",
-      purpose: "This trains the hamstrings through knee flexion while they begin in a lengthened hip position.",
-      cues: ["Keep the hips and thighs secured.", "Curl smoothly through the full available range.", "Control the return instead of letting the stack pull you home."],
-      mistakes: ["Letting the hips lift from the seat.", "Using momentum at the start.", "Dropping the weight on the return."],
-      alternatives: ["Lying Leg Curl", "Nordic Curl", "Standing Single-Leg Curl"],
-      evidence: "Training muscles at longer lengths may support hypertrophy, and seated curls place the biarticular hamstrings in a longer starting position.", tags: ["Hypertrophy"]
-    },
-    "Lying Leg Curl": {
-      name: "Lying Leg Curl", pattern: "Knee flexion", defaultWeight: 45,
-      muscles: "Hamstrings",
-      purpose: "A straightforward knee-flexion movement that lets the hamstrings work while the rest of you lies there pretending this is restful.",
-      cues: ["Keep the hips against the pad.", "Curl without kicking the weight.", "Lower slowly to full extension."],
-      mistakes: ["Lifting the hips.", "Using a shortened range.", "Letting the stack slam down."],
-      alternatives: ["Seated Leg Curl", "Nordic Curl", "Standing Single-Leg Curl"],
-      evidence: "Lying curls are an effective knee-flexion exercise and complement hip-hinge training.", tags: ["Hypertrophy"]
-    },
-    "Nordic Curl": {
-      name: "Nordic Curl", pattern: "Knee flexion", defaultWeight: 0,
-      muscles: "Hamstrings",
-      purpose: "The Nordic curl trains the hamstrings eccentrically with bodyweight. It is simple on paper and occasionally disrespectful in person.",
-      cues: ["Keep the hips extended.", "Lower as slowly as possible.", "Use assistance to preserve control."],
-      mistakes: ["Bending at the hips.", "Dropping without resistance.", "Using too little assistance to complete quality reps."],
-      alternatives: ["Seated Leg Curl", "Lying Leg Curl", "Standing Single-Leg Curl"],
-      evidence: "Nordic curls are a high-force eccentric knee-flexion exercise and can improve hamstring strength.", tags: ["Strength", "Hypertrophy"]
-    },
-    "Standing Single-Leg Curl": {
-      name: "Standing Single-Leg Curl", pattern: "Knee flexion", defaultWeight: 20,
-      muscles: "Hamstrings",
-      purpose: "The unilateral setup trains knee flexion one side at a time and makes each leg sign its own paperwork.",
-      cues: ["Keep the working thigh still.", "Curl smoothly.", "Control the return."],
-      mistakes: ["Rotating the hips.", "Swinging the leg.", "Stopping short of full extension."],
-      alternatives: ["Seated Leg Curl", "Lying Leg Curl", "Nordic Curl"],
-      evidence: "Unilateral curls allow independent loading and can help address side-to-side differences.", tags: ["Hypertrophy"]
-    },
-    "Cable Lateral Raise": {
-      name: "Cable Lateral Raise", pattern: "Shoulder abduction", defaultWeight: 10,
-      muscles: "Side delts",
-      purpose: "The cable keeps tension on the side delts through more of the range than gravity-only variations.",
-      cues: ["Lead with the elbows.", "Raise until the side delts have done the work, not the traps.", "Keep the return smooth."],
-      mistakes: ["Shrugging the shoulder upward.", "Swinging the torso.", "Raising far beyond the useful range."],
-      alternatives: ["Dumbbell Lateral Raise", "Machine Lateral Raise", "Lean-Away Cable Raise"],
-      evidence: "Consistent resistance through shoulder abduction can make the target muscle easier to train close to failure.", tags: ["Hypertrophy"]
-    },
-    "Dumbbell Lateral Raise": {
-      name: "Dumbbell Lateral Raise", pattern: "Shoulder abduction", defaultWeight: 10,
-      muscles: "Side delts",
-      purpose: "A simple side-delt movement that needs little equipment and very little theatre.",
-      cues: ["Lead with the elbows.", "Use a controlled arc.", "Stop before shrugging takes over."],
-      mistakes: ["Swinging the dumbbells.", "Shrugging hard at the top.", "Using a load that shortens the range."],
-      alternatives: ["Cable Lateral Raise", "Machine Lateral Raise", "Lean-Away Cable Raise"],
-      evidence: "Dumbbell lateral raises are a practical shoulder-abduction exercise when performed through a controlled range.", tags: ["Hypertrophy"]
-    },
-    "Machine Lateral Raise": {
-      name: "Machine Lateral Raise", pattern: "Shoulder abduction", defaultWeight: 30,
-      muscles: "Side delts",
-      purpose: "The machine removes grip and balance demands so the side delts can sit alone at the table.",
-      cues: ["Align the machine pivot with the shoulder.", "Keep the torso against the pad.", "Lift smoothly without shrugging."],
-      mistakes: ["Using the wrong seat height.", "Driving with the traps.", "Letting the stack crash."],
-      alternatives: ["Cable Lateral Raise", "Dumbbell Lateral Raise", "Lean-Away Cable Raise"],
-      evidence: "Stable lateral-raise machines can support consistent loading and effort near failure.", tags: ["Hypertrophy"]
-    },
-    "Lean-Away Cable Raise": {
-      name: "Lean-Away Cable Raise", pattern: "Shoulder abduction", defaultWeight: 7.5,
-      muscles: "Side delts",
-      purpose: "Leaning away changes the resistance profile and gives the side delt more work early in the range.",
-      cues: ["Hold the support firmly.", "Keep the torso fixed.", "Raise with the elbow leading."],
-      mistakes: ["Turning the lean into a swing.", "Shrugging.", "Using too much weight to control the bottom range."],
-      alternatives: ["Cable Lateral Raise", "Dumbbell Lateral Raise", "Machine Lateral Raise"],
-      evidence: "Changing body position relative to the cable can alter where the movement is most challenging.", tags: ["Hypertrophy"]
-    },
-    "Cable Curl": {
-      name: "Cable Curl", pattern: "Elbow flexion", defaultWeight: 25,
-      muscles: "Biceps, brachialis",
-      purpose: "A simple curl with stable resistance. No circus. Just elbows bending under load.",
-      cues: ["Keep the upper arms quiet.", "Reach a controlled full extension.", "Curl without leaning backward."],
-      mistakes: ["Driving the elbows forward.", "Leaning back to finish reps.", "Letting the cable pull the arms down quickly."],
-      alternatives: ["Preacher Curl", "Dumbbell Curl", "Machine Curl"],
-      evidence: "Multiple curl variations can be effective; the useful choice is one you can load comfortably through a repeatable range.", tags: ["Hypertrophy"]
-    },
-    "Preacher Curl": {
-      name: "Preacher Curl", pattern: "Elbow flexion", defaultWeight: 25,
-      muscles: "Biceps, brachialis",
-      purpose: "The support limits shoulder movement and makes the elbow flexors explain themselves without bringing friends.",
-      cues: ["Keep the upper arm on the pad.", "Lower under control.", "Curl without lifting the shoulder."],
-      mistakes: ["Relaxing completely at the bottom under heavy load.", "Lifting the arm from the pad.", "Using momentum."],
-      alternatives: ["Cable Curl", "Dumbbell Curl", "Machine Curl"],
-      evidence: "Preacher curls provide a stable setup and challenge the elbow flexors strongly near longer muscle lengths.", tags: ["Hypertrophy"]
-    },
-    "Dumbbell Curl": {
-      name: "Dumbbell Curl", pattern: "Elbow flexion", defaultWeight: 14,
-      muscles: "Biceps, brachialis",
-      purpose: "A flexible curl option that lets each arm work independently and prevents the stronger side from running the family business.",
-      cues: ["Keep the upper arm still.", "Supinate as you curl if comfortable.", "Lower slowly."],
-      mistakes: ["Swinging the torso.", "Letting the elbow travel forward.", "Dropping the dumbbell on the return."],
-      alternatives: ["Cable Curl", "Preacher Curl", "Machine Curl"],
-      evidence: "Dumbbell curls allow independent arm work and can be performed through a large range of motion.", tags: ["Hypertrophy"]
-    },
-    "Machine Curl": {
-      name: "Machine Curl", pattern: "Elbow flexion", defaultWeight: 30,
-      muscles: "Biceps, brachialis",
-      purpose: "The machine provides a fixed setup so the biceps can work without the torso trying to negotiate overtime.",
-      cues: ["Align the elbow with the machine pivot.", "Keep the arm against the support.", "Control both directions."],
-      mistakes: ["Using the wrong seat position.", "Lifting the elbows.", "Letting the stack slam."],
-      alternatives: ["Cable Curl", "Preacher Curl", "Dumbbell Curl"],
-      evidence: "Stable machine curls can make effort and progression easy to standardise.", tags: ["Hypertrophy"]
+  function humanize(value = "") {
+    return String(value).replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+
+  function escapeHtml(value = "") {
+    return String(value).replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    })[character]);
+  }
+
+  const KnowledgeService = (() => {
+    const exerciseMap = new Map(KB.exercises.map((exercise) => [exercise.id, exercise]));
+    const claimMap = new Map(KB.claims.map((claim) => [claim.id, claim]));
+    const substitutionMap = new Map();
+
+    KB.substitutions.forEach((relation) => {
+      if (!substitutionMap.has(relation.from)) substitutionMap.set(relation.from, []);
+      substitutionMap.get(relation.from).push(relation);
+    });
+
+    function getExercise(id) {
+      return exerciseMap.get(id) || null;
     }
+
+    function getClaims(id) {
+      const exercise = getExercise(id);
+      return exercise
+        ? (exercise.claim_ids || []).map((claimId) => claimMap.get(claimId)).filter(Boolean)
+        : [];
+    }
+
+    function getRestGuidance(id) {
+      const defaults = getExercise(id)?.programming_defaults || {};
+      const range = defaults.rest_seconds || [120, 180];
+      return {
+        defaultSeconds: Number(defaults.default_rest_seconds || range[0] || 120),
+        minSeconds: Number(range[0] || 120),
+        maxSeconds: Number(range[1] || range[0] || 180),
+        note: defaults.notes || ""
+      };
+    }
+
+    function getAlternatives(id) {
+      const exercise = getExercise(id);
+      if (!exercise) return [];
+      const richRelations = substitutionMap.get(id) || [];
+      const relationByTarget = new Map(richRelations.map((relation) => [relation.to, relation]));
+      return (exercise.substitutions || [])
+        .map((targetId) => ({
+          exercise: getExercise(targetId),
+          relation: relationByTarget.get(targetId) || null
+        }))
+        .filter((item) => item.exercise);
+    }
+
+    function commonRoles(fromId, toId) {
+      const from = getExercise(fromId);
+      const to = getExercise(toId);
+      if (!from || !to) return [];
+      return (from.default_programme_roles || []).filter(
+        (role) => (to.default_programme_roles || []).includes(role)
+      );
+    }
+
+    function getGuide(id) {
+      const exercise = getExercise(id);
+      return exercise ? {
+        exercise,
+        claims: getClaims(id),
+        alternatives: getAlternatives(id),
+        rest: getRestGuidance(id)
+      } : null;
+    }
+
+    return { getExercise, getClaims, getRestGuidance, getAlternatives, commonRoles, getGuide };
+  })();
+
+  // Prototype user layer. Loads/history belong to the user, not the scientific database.
+  const DEMO_LOADS = {
+    incline_dumbbell_press: 35, flat_dumbbell_press: 37.5, incline_smith_press: 60,
+    machine_chest_press: 60, barbell_bench_press: 80,
+    chest_supported_row: 45, seated_cable_row: 55, machine_row: 60, one_arm_dumbbell_row: 35,
+    pull_up: 0, lat_pulldown: 60,
+    hack_squat: 100, leg_press: 160, high_bar_squat: 100, front_squat: 75,
+    seated_leg_curl: 52.5, lying_leg_curl: 45, romanian_deadlift: 90,
+    cable_lateral_raise: 10, dumbbell_lateral_raise: 10, machine_shoulder_press: 50,
+    standing_barbell_overhead_press: 45, reverse_pec_deck: 40,
+    bayesian_cable_curl: 15, preacher_curl: 25, ez_bar_curl: 25, incline_dumbbell_curl: 12.5,
+    cable_pushdown: 30, overhead_cable_extension: 25,
+    standing_calf_raise: 60, seated_calf_raise: 45
   };
 
+  function demoLoadFor(exerciseId, fallback = 20) {
+    return Object.prototype.hasOwnProperty.call(DEMO_LOADS, exerciseId)
+      ? DEMO_LOADS[exerciseId]
+      : fallback;
+  }
+
+  // Programme layer: IDs + prescription only. Exercise facts come from KnowledgeService.
   const workoutTemplates = {
     "Full Body A": [
-      { slot: "Incline Dumbbell Press", sets: 3, target: [8,10], reps: 9, lastWeight: 32.5, lastReps: 10 },
-      { slot: "Chest-Supported Row", sets: 3, target: [8,12], reps: 10, lastWeight: 45, lastReps: 10 },
-      { slot: "Hack Squat", sets: 3, target: [8,10], reps: 9, lastWeight: 95, lastReps: 10 },
-      { slot: "Seated Leg Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 52.5, lastReps: 13 },
-      { slot: "Cable Lateral Raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 14 },
-      { slot: "Cable Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 22.5, lastReps: 14 }
+      { slotId: "A_press", exerciseId: "incline_dumbbell_press", sets: 3, target: [8,10], reps: 9, lastWeight: 32.5, lastReps: 10 },
+      { slotId: "A_row", exerciseId: "chest_supported_row", sets: 3, target: [8,12], reps: 10, lastWeight: 45, lastReps: 10 },
+      { slotId: "A_squat", exerciseId: "hack_squat", sets: 3, target: [8,10], reps: 9, lastWeight: 95, lastReps: 10 },
+      { slotId: "A_hamstring", exerciseId: "seated_leg_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 52.5, lastReps: 13 },
+      { slotId: "A_lateral_delt", exerciseId: "cable_lateral_raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 14 },
+      { slotId: "A_biceps", exerciseId: "bayesian_cable_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 15, lastReps: 13 }
     ],
     "Full Body B": [
-      { slot: "Flat Dumbbell Press", sets: 3, target: [8,10], reps: 9, lastWeight: 35, lastReps: 9 },
-      { slot: "One-Arm Dumbbell Row", sets: 3, target: [8,12], reps: 10, lastWeight: 32.5, lastReps: 11 },
-      { slot: "Leg Press", sets: 3, target: [8,12], reps: 10, lastWeight: 140, lastReps: 10 },
-      { slot: "Lying Leg Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 45, lastReps: 12 },
-      { slot: "Dumbbell Lateral Raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 15 },
-      { slot: "Preacher Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 25, lastReps: 12 }
+      { slotId: "B_press", exerciseId: "flat_dumbbell_press", sets: 3, target: [8,10], reps: 9, lastWeight: 35, lastReps: 9 },
+      { slotId: "B_row", exerciseId: "one_arm_dumbbell_row", sets: 3, target: [8,12], reps: 10, lastWeight: 32.5, lastReps: 11 },
+      { slotId: "B_squat", exerciseId: "leg_press", sets: 3, target: [8,12], reps: 10, lastWeight: 140, lastReps: 10 },
+      { slotId: "B_hamstring", exerciseId: "lying_leg_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 45, lastReps: 12 },
+      { slotId: "B_lateral_delt", exerciseId: "dumbbell_lateral_raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 15 },
+      { slotId: "B_biceps", exerciseId: "preacher_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 25, lastReps: 12 }
     ],
     "Full Body C": [
-      { slot: "Smith Incline Press", sets: 3, target: [6,10], reps: 8, lastWeight: 57.5, lastReps: 8 },
-      { slot: "Seated Cable Row", sets: 3, target: [8,12], reps: 10, lastWeight: 52.5, lastReps: 10 },
-      { slot: "Pendulum Squat", sets: 3, target: [8,12], reps: 9, lastWeight: 80, lastReps: 9 },
-      { slot: "Nordic Curl", sets: 3, target: [6,10], reps: 7, lastWeight: 0, lastReps: 7 },
-      { slot: "Machine Lateral Raise", sets: 3, target: [12,20], reps: 14, lastWeight: 25, lastReps: 14 },
-      { slot: "Machine Curl", sets: 3, target: [10,15], reps: 12, lastWeight: 30, lastReps: 12 }
+      { slotId: "C_press", exerciseId: "incline_smith_press", sets: 3, target: [6,10], reps: 8, lastWeight: 57.5, lastReps: 8 },
+      { slotId: "C_row", exerciseId: "seated_cable_row", sets: 3, target: [8,12], reps: 10, lastWeight: 52.5, lastReps: 10 },
+      { slotId: "C_squat", exerciseId: "high_bar_squat", sets: 3, target: [6,10], reps: 8, lastWeight: 95, lastReps: 8 },
+      { slotId: "C_hinge", exerciseId: "romanian_deadlift", sets: 3, target: [6,10], reps: 8, lastWeight: 85, lastReps: 9 },
+      { slotId: "C_shoulders", exerciseId: "standing_barbell_overhead_press", sets: 3, target: [6,10], reps: 8, lastWeight: 42.5, lastReps: 8 },
+      { slotId: "C_biceps", exerciseId: "ez_bar_curl", sets: 3, target: [8,15], reps: 11, lastWeight: 25, lastReps: 11 }
     ]
   };
 
@@ -718,21 +599,24 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     const savedSwaps = loadDefaultSwaps();
     const template = workoutTemplates[workoutName] || workoutTemplates["Full Body A"];
     return template.map((item) => {
-      const chosenName = savedSwaps[item.slot] && library[savedSwaps[item.slot]] ? savedSwaps[item.slot] : item.slot;
-      const data = library[chosenName];
+      const savedId = savedSwaps[item.slotId];
+      const chosenId = KnowledgeService.getExercise(savedId) ? savedId : item.exerciseId;
       return {
-        slot: item.slot,
-        activeName: chosenName,
+        slotId: item.slotId,
+        baseExerciseId: item.exerciseId,
+        activeExerciseId: chosenId,
         sets: item.sets,
         target: item.target,
         lastWeight: item.lastWeight,
         lastReps: item.lastReps,
-        currentWeight: data.defaultWeight,
+        currentWeight: demoLoadFor(chosenId, item.lastWeight),
         currentReps: item.reps,
         completedSets: 0,
         setLogs: [],
         completed: false,
-        pendingSwap: chosenName !== item.slot ? { from: item.slot, to: chosenName, inherited: true } : null
+        pendingSwap: chosenId !== item.exerciseId
+          ? { from: item.exerciseId, to: chosenId, inherited: true }
+          : null
       };
     });
   }
@@ -810,7 +694,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
   }
   function currentExercise() { return exercises[state.exerciseIndex]; }
-  function currentData() { return library[currentExercise().activeName]; }
+  function currentData() { return KnowledgeService.getExercise(currentExercise().activeExerciseId); }
 
   function showScreen(id) {
     document.querySelectorAll(".screen").forEach((screen) => screen.classList.toggle("active", screen.id === id));
@@ -1131,7 +1015,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     $("repsDisplay").textContent = exercise.currentReps;
     $("previewCount").textContent = `${state.exerciseIndex + 1} of ${exercises.length}`;
     $("peekCurrent").textContent = data.name;
-    $("peekNext").textContent = exercises[state.exerciseIndex + 1] ? library[exercises[state.exerciseIndex + 1].activeName].name : "Last movement";
+    $("peekNext").textContent = exercises[state.exerciseIndex + 1] ? KnowledgeService.getExercise(exercises[state.exerciseIndex + 1].activeExerciseId).name : "Last movement";
     $("peekMore").textContent = state.exerciseIndex < exercises.length - 2 ? `+${exercises.length - state.exerciseIndex - 2} more` : "Last one in view";
     renderSetProgress(exercise);
     $("completeSetBtn").disabled = exercise.completed;
@@ -1149,7 +1033,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 
   function renderWorkList() {
     $("workList").innerHTML = exercises.map((exercise, index) => {
-      const data = library[exercise.activeName];
+      const data = KnowledgeService.getExercise(exercise.activeExerciseId);
       const status = exercise.completed ? "done" : index === state.exerciseIndex ? "current" : "";
       const action = index === state.exerciseIndex ? "Now" : exercise.completed ? "Done" : "Go";
       return `
@@ -1188,7 +1072,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   function openExerciseContext(index) {
     if (!Number.isInteger(index) || !exercises[index]) return;
     state.contextExerciseIndex = index;
-    $("contextTitle").textContent = library[exercises[index].activeName].name;
+    $("contextTitle").textContent = KnowledgeService.getExercise(exercises[index].activeExerciseId).name;
     openSheet("contextSheet");
   }
 
@@ -1276,7 +1160,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     exercise.setLogs.push({ set: setNumber, weight: exercise.currentWeight, reps: exercise.currentReps, time: Date.now() });
     exercise.completedSets += 1;
     state.setsLogged += 1;
-    state.events.push({ type: "set_logged", exercise: exercise.activeName, set: setNumber, weight: exercise.currentWeight, reps: exercise.currentReps, target: exercise.target, time: Date.now() });
+    state.events.push({ type: "set_logged", exercise: exercise.activeExerciseId, set: setNumber, weight: exercise.currentWeight, reps: exercise.currentReps, target: exercise.target, time: Date.now() });
 
     const wasExerciseCompleted = exercise.completedSets >= exercise.sets;
     if (wasExerciseCompleted && !exercise.completed) {
@@ -1329,11 +1213,11 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     };
 
     if (completedExercise.pendingSwap && !completedExercise.pendingSwap.inherited) {
-      $("swapChoiceCopy").textContent = `${library[completedExercise.activeName].name} did the job today. Should it replace ${completedExercise.slot} in future sessions?`;
+      $("swapChoiceCopy").textContent = `${KnowledgeService.getExercise(completedExercise.activeExerciseId).name} did the job today. Should it replace ${KnowledgeService.getExercise(completedExercise.baseExerciseId).name} in this programme slot?`;
       openSheet("swapChoiceSheet");
       $("defaultSwapBtn").onclick = () => {
         const swaps = loadDefaultSwaps();
-        swaps[completedExercise.slot] = completedExercise.activeName;
+        swaps[completedExercise.slotId] = completedExercise.activeExerciseId;
         localStorage.setItem(DEFAULT_SWAP_KEY, JSON.stringify(swaps));
         completedExercise.pendingSwap = null;
         closeSheets(false);
@@ -1350,6 +1234,8 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   }
 
   function startRest() {
+    const restGuide = KnowledgeService.getRestGuidance(currentExercise().activeExerciseId);
+    state.plannedRest = restGuide.defaultSeconds;
     state.restSeconds = state.plannedRest;
     updateRest();
     $("restOverlay").classList.add("show");
@@ -1404,49 +1290,123 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
     showScreen("done");
   }
 
+  function describeAlternative(fromId, item) {
+    const relation = item.relation;
+    const sharedRoles = KnowledgeService.commonRoles(fromId, item.exercise.id);
+    const pieces = [];
+
+    if (sharedRoles.length) pieces.push("Same programme role");
+    else if (item.exercise.movement_family === KnowledgeService.getExercise(fromId)?.movement_family) pieces.push("Same movement family");
+
+    if (relation?.changes) {
+      Object.entries(relation.changes).slice(0, 2).forEach(([key, value]) => {
+        pieces.push(`${humanize(key)}: ${humanize(value)}`);
+      });
+    } else {
+      const stability = item.exercise.training_characteristics?.stability_requirement?.value;
+      if (stability) pieces.push(`Stability: ${humanize(stability)}`);
+    }
+    return pieces.slice(0, 3).join(" · ") || humanize(item.exercise.movement_family);
+  }
+
+  function renderAlternativeButtons(fromId, alternatives, attributeName) {
+    if (!alternatives.length) {
+      return `<p>No direct like-for-like swap is defined yet. Buddy would rather admit that than invent one.</p>`;
+    }
+    return alternatives.map((item) => `
+      <button class="alt-button" type="button" ${attributeName}="${item.exercise.id}">
+        <span>
+          <strong>${escapeHtml(item.exercise.name)}</strong>
+          <small style="display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.35;">
+            ${escapeHtml(describeAlternative(fromId, item))}
+          </small>
+        </span>
+        <span>Use →</span>
+      </button>`).join("");
+  }
+
   function openGuide(index = state.exerciseIndex) {
     if (!Number.isInteger(index) || !exercises[index]) return;
-    const exercise = exercises[index];
-    const data = library[exercise.activeName];
+    const exerciseState = exercises[index];
+    const guide = KnowledgeService.getGuide(exerciseState.activeExerciseId);
+    if (!guide) return;
+
+    const data = guide.exercise;
+    const primaryMuscles = (data.muscles?.primary || []).map(humanize).join(" · ");
+    const secondaryMuscles = (data.muscles?.secondary || []).map(humanize).join(" · ") || "—";
+    const repRange = data.programming_defaults?.common_rep_range || exerciseState.target;
+    const evidenceClaims = guide.claims.slice(0, 4);
+
     $("whyTitle").textContent = "Exercise guide";
     $("whyContent").innerHTML = `
-      <div class="sheet-section"><h3>${data.name}</h3><p>${data.purpose}</p></div>
-      <div class="sheet-section"><h3>Technique</h3><p>${data.cues.map((cue) => `• ${cue}`).join("<br>")}</p></div>
-      <div class="sheet-section"><h3>Common mistakes</h3><p>${data.mistakes.map((mistake) => `• ${mistake}`).join("<br>")}</p></div>
-      <div class="sheet-section"><h3>Muscles</h3><p>${data.muscles}</p></div>
-      <div class="sheet-section"><h3>Best used for</h3><p>${data.tags.join(" · ")}</p></div>
-      <div class="sheet-section"><h3>Alternatives</h3><div class="alt-list">${data.alternatives.map((name) => `<button class="alt-button" type="button" data-alternative="${name}"><span>${name}</span><span>Use →</span></button>`).join("")}</div></div>
-      <div class="sheet-section"><h3>Evidence</h3><p>${data.evidence}</p></div>`;
-    $("whyContent").querySelectorAll("[data-alternative]").forEach((button) => {
-      button.addEventListener("click", () => selectAlternative(button.dataset.alternative, index));
+      <div class="sheet-section">
+        <h3>${escapeHtml(data.name)}</h3>
+        <p>${escapeHtml(data.buddy?.why_use_it || "")}</p>
+        <p style="margin-top:8px;color:var(--muted);font-size:10px;">
+          ${escapeHtml(humanize(data.movement_family))} ·
+          ${escapeHtml((data.default_programme_roles || []).map(humanize).join(" · "))}
+        </p>
+      </div>
+      <div class="sheet-section"><h3>Technique</h3><p>${(data.technique?.priority_cues || []).map((cue) => `• ${escapeHtml(cue)}`).join("<br>")}</p></div>
+      <div class="sheet-section"><h3>Common mistakes</h3><p>${(data.technique?.common_mistakes || []).map((mistake) => `• ${escapeHtml(mistake)}`).join("<br>")}</p></div>
+      <div class="sheet-section"><h3>Muscles</h3><p><strong>Primary</strong> · ${escapeHtml(primaryMuscles)}<br><strong>Secondary</strong> · ${escapeHtml(secondaryMuscles)}</p></div>
+      <div class="sheet-section">
+        <h3>Programming</h3>
+        <p>Typical reps · ${repRange[0]}–${repRange[1]}<br>
+        Rest range · ${guide.rest.minSeconds}–${guide.rest.maxSeconds} sec<br>
+        Buddy starts at · ${guide.rest.defaultSeconds} sec</p>
+        <p>${escapeHtml(guide.rest.note)}</p>
+      </div>
+      <div class="sheet-section"><h3>Alternatives</h3><div class="alt-list">${renderAlternativeButtons(data.id, guide.alternatives, "data-alternative-id")}</div></div>
+      <div class="sheet-section">
+        <h3>Evidence</h3>
+        ${evidenceClaims.length
+          ? evidenceClaims.map((claim) => `<p><strong>${escapeHtml(humanize(claim.confidence))} confidence</strong><br>${escapeHtml(claim.statement)}</p>`).join("")
+          : "<p>No linked claim yet.</p>"}
+        <p style="color:var(--muted);font-size:10px;">Buddy Training Knowledge v${escapeHtml(KB.version)} · scientific claims are stored separately from the workout UI.</p>
+      </div>`;
+
+    $("whyContent").querySelectorAll("[data-alternative-id]").forEach((button) => {
+      button.addEventListener("click", () => selectAlternative(button.dataset.alternativeId, index));
     });
     openSheet("whySheet");
   }
 
   function openSwapSheet(index) {
     if (!Number.isInteger(index) || !exercises[index]) return;
-    const data = library[exercises[index].activeName];
+    const activeId = exercises[index].activeExerciseId;
+    const data = KnowledgeService.getExercise(activeId);
+    const alternatives = KnowledgeService.getAlternatives(activeId);
+
     state.contextExerciseIndex = index;
     $("swapTitle").textContent = `Swap ${data.name}`;
-    $("swapIntro").textContent = "Same movement job, different piece of equipment or setup.";
-    $("swapList").innerHTML = data.alternatives.map((name) => `<button class="alt-button" type="button" data-swap-alt="${name}"><span>${name}</span><span>Use →</span></button>`).join("");
-    $("swapList").querySelectorAll("[data-swap-alt]").forEach((button) => {
-      button.onclick = () => selectAlternative(button.dataset.swapAlt, index);
+    $("swapIntro").textContent = "Buddy is pulling these from the training database and preserving the programme job where possible.";
+    $("swapList").innerHTML = renderAlternativeButtons(activeId, alternatives, "data-swap-alt-id");
+
+    $("swapList").querySelectorAll("[data-swap-alt-id]").forEach((button) => {
+      button.onclick = () => selectAlternative(button.dataset.swapAltId, index);
     });
     openSheet("swapSheet");
   }
 
-  function selectAlternative(name, index = state.exerciseIndex) {
-    if (!library[name] || !exercises[index]) return;
+  function selectAlternative(exerciseId, index = state.exerciseIndex) {
+    const alternative = KnowledgeService.getExercise(exerciseId);
+    if (!alternative || !exercises[index]) return;
+
     const exercise = exercises[index];
-    const previousName = exercise.activeName;
-    exercise.activeName = name;
-    exercise.currentWeight = library[name].defaultWeight;
-    exercise.pendingSwap = { from: exercise.slot, to: name, inherited: false };
+    const previousId = exercise.activeExerciseId;
+    exercise.activeExerciseId = exerciseId;
+    exercise.currentWeight = demoLoadFor(exerciseId, exercise.currentWeight);
+    exercise.pendingSwap = { from: exercise.baseExerciseId, to: exerciseId, inherited: false };
+
     closeSheets(false);
     renderWorkout();
-    showMessage({ text: `${name} is in. Same job, different furniture.`, duration: 1100, continuation: () => {} });
-    state.events.push({ type: "exercise_swapped", from: previousName, to: name, time: Date.now() });
+    showMessage({
+      text: `${alternative.name} is in. Same job, different furniture.`,
+      duration: 1100,
+      continuation: () => {}
+    });
+    state.events.push({ type: "exercise_swapped", from: previousId, to: exerciseId, time: Date.now() });
   }
 
   function createWheelItems(element, values, current) {
@@ -1528,19 +1488,30 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
   function runSelfTests() {
     const results = [];
     const assert = (name, condition) => results.push({ name, pass: Boolean(condition) });
+
+    assert("Knowledge base loaded", KB?.version === "1.4" && KB.exercises.length >= 43);
+    assert("Exercise resolves by ID", KnowledgeService.getExercise("incline_dumbbell_press")?.name === "Incline Dumbbell Press");
+    assert("Rest guidance comes from DB", KnowledgeService.getRestGuidance("incline_dumbbell_press").defaultSeconds === 120);
+    assert("Substitution graph comes from DB", KnowledgeService.getAlternatives("incline_dumbbell_press").some((item) => item.exercise.id === "incline_smith_press"));
+
     showScreen("workout");
+    resetSessionForWorkout("Full Body A");
     renderWorkout();
+
     openPicker({ stopPropagation() {} });
     assert("Picker opens", $("pickerSheet").classList.contains("show"));
-    assert("Why sheet stays closed", !$("whySheet").classList.contains("show"));
+    assert("Exercise guide stays closed", !$("whySheet").classList.contains("show"));
     closeSheets(false);
+
     openSheet("workoutSheet");
     jumpToExercise(2);
     assert("Workout row can jump", state.exerciseIndex === 2);
+
     state.exerciseIndex = 0;
-    selectAlternative("Smith Incline Press");
-    assert("Alternative loads immediately", currentExercise().activeName === "Smith Incline Press");
+    selectAlternative("incline_smith_press");
+    assert("Database alternative loads immediately", currentExercise().activeExerciseId === "incline_smith_press");
     assert("Alternative marked pending", Boolean(currentExercise().pendingSwap));
+
     $("messageOverlay").classList.remove("show");
     renderWorkout();
     $("selfTest").textContent = JSON.stringify(results);
