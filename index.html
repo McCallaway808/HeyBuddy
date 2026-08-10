@@ -522,6 +522,7 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
     standing_barbell_overhead_press: 45, reverse_pec_deck: 40,
     bayesian_cable_curl: 15, preacher_curl: 25, ez_bar_curl: 25, incline_dumbbell_curl: 12.5,
     cable_pushdown: 30, overhead_cable_extension: 25,
+    hip_thrust: 100, pec_deck: 45, bulgarian_split_squat: 25,
     standing_calf_raise: 60, seated_calf_raise: 45
   };
 
@@ -531,33 +532,198 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
       : fallback;
   }
 
-  // Programme layer: IDs + prescription only. Exercise facts come from KnowledgeService.
-  const workoutTemplates = {
-    "Full Body A": [
-      { slotId: "A_press", exerciseId: "incline_dumbbell_press", sets: 3, target: [8,10], reps: 9, lastWeight: 32.5, lastReps: 10 },
-      { slotId: "A_row", exerciseId: "chest_supported_row", sets: 3, target: [8,12], reps: 10, lastWeight: 45, lastReps: 10 },
-      { slotId: "A_squat", exerciseId: "hack_squat", sets: 3, target: [8,10], reps: 9, lastWeight: 95, lastReps: 10 },
-      { slotId: "A_hamstring", exerciseId: "seated_leg_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 52.5, lastReps: 13 },
-      { slotId: "A_lateral_delt", exerciseId: "cable_lateral_raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 14 },
-      { slotId: "A_biceps", exerciseId: "bayesian_cable_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 15, lastReps: 13 }
-    ],
-    "Full Body B": [
-      { slotId: "B_press", exerciseId: "flat_dumbbell_press", sets: 3, target: [8,10], reps: 9, lastWeight: 35, lastReps: 9 },
-      { slotId: "B_row", exerciseId: "one_arm_dumbbell_row", sets: 3, target: [8,12], reps: 10, lastWeight: 32.5, lastReps: 11 },
-      { slotId: "B_squat", exerciseId: "leg_press", sets: 3, target: [8,12], reps: 10, lastWeight: 140, lastReps: 10 },
-      { slotId: "B_hamstring", exerciseId: "lying_leg_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 45, lastReps: 12 },
-      { slotId: "B_lateral_delt", exerciseId: "dumbbell_lateral_raise", sets: 3, target: [12,20], reps: 15, lastWeight: 10, lastReps: 15 },
-      { slotId: "B_biceps", exerciseId: "preacher_curl", sets: 3, target: [10,15], reps: 12, lastWeight: 25, lastReps: 12 }
-    ],
-    "Full Body C": [
-      { slotId: "C_press", exerciseId: "incline_smith_press", sets: 3, target: [6,10], reps: 8, lastWeight: 57.5, lastReps: 8 },
-      { slotId: "C_row", exerciseId: "seated_cable_row", sets: 3, target: [8,12], reps: 10, lastWeight: 52.5, lastReps: 10 },
-      { slotId: "C_squat", exerciseId: "high_bar_squat", sets: 3, target: [6,10], reps: 8, lastWeight: 95, lastReps: 8 },
-      { slotId: "C_hinge", exerciseId: "romanian_deadlift", sets: 3, target: [6,10], reps: 8, lastWeight: 85, lastReps: 9 },
-      { slotId: "C_shoulders", exerciseId: "standing_barbell_overhead_press", sets: 3, target: [6,10], reps: 8, lastWeight: 42.5, lastReps: 8 },
-      { slotId: "C_biceps", exerciseId: "ez_bar_curl", sets: 3, target: [8,15], reps: 11, lastWeight: 25, lastReps: 11 }
-    ]
+  // V9 Programme Engine
+  // Buddy decides the jobs a week needs first, then chooses exercises from the knowledge base.
+  const PROGRAMME_PROFILE = {
+    goal: "hypertrophy",
+    experience: "intermediate",
+    sessionsPerWeek: 3,
+    sessionMinutes: 60,
+    equipment: "full_gym",
+    priorities: ["balanced_development"],
+    fatiguePreference: "moderate",
+    stabilityPreference: "moderate_to_high"
   };
+
+  const PROGRAMME_BLUEPRINTS = {
+    "Full Body A": {
+      read: "Upper-chest press and a stable row lead. Quads and hamstrings get their own jobs, then side delts and biceps finish the room.",
+      slots: [
+        { slotId: "A_upper_press", role: "primary_upper_chest_press", sets: 3, target: [6,10], fatigueBudget: "moderate" },
+        { slotId: "A_row", role: "primary_row", sets: 3, target: [8,12], fatigueBudget: "moderate" },
+        { slotId: "A_quad", role: "primary_quad_compound", sets: 3, target: [8,12], fatigueBudget: "moderate" },
+        { slotId: "A_hamstring", role: "hamstring_isolation", sets: 3, target: [10,15], fatigueBudget: "low" },
+        { slotId: "A_lateral_delt", role: "lateral_delt_isolation", sets: 3, target: [12,20], fatigueBudget: "low" },
+        { slotId: "A_biceps", role: "biceps_isolation", sets: 3, target: [8,15], fatigueBudget: "low" }
+      ]
+    },
+    "Full Body B": {
+      read: "A flat press and vertical pull cover the upper body from the other direction. Unilateral legs and a hinge do the heavier lower-body work before rear delts and triceps.",
+      slots: [
+        { slotId: "B_chest_press", role: "primary_chest_press", sets: 3, target: [6,10], fatigueBudget: "moderate" },
+        { slotId: "B_vertical_pull", role: "primary_vertical_pull", sets: 3, target: [6,12], fatigueBudget: "moderate" },
+        { slotId: "B_unilateral", role: "unilateral_quad_glute", sets: 3, target: [8,12], fatigueBudget: "moderate" },
+        { slotId: "B_hinge", role: "primary_hinge", sets: 3, target: [6,10], fatigueBudget: "high" },
+        { slotId: "B_rear_delt", role: "rear_delt_isolation", sets: 3, target: [12,20], fatigueBudget: "low" },
+        { slotId: "B_triceps", role: "triceps_isolation", sets: 3, target: [8,15], fatigueBudget: "low" }
+      ]
+    },
+    "Full Body C": {
+      read: "Shoulders get the main press today. Another row balances it, legs get a stable compound plus direct glute work, then chest isolation and calves close the week.",
+      slots: [
+        { slotId: "C_shoulder_press", role: "primary_shoulders_press", sets: 3, target: [6,10], fatigueBudget: "moderate" },
+        { slotId: "C_row", role: "secondary_row", sets: 3, target: [8,12], fatigueBudget: "moderate" },
+        { slotId: "C_quad", role: "primary_quad_compound", sets: 3, target: [8,12], fatigueBudget: "moderate" },
+        { slotId: "C_glute", role: "glute_hypertrophy", sets: 3, target: [8,15], fatigueBudget: "moderate" },
+        { slotId: "C_chest_isolation", role: "chest_isolation", sets: 3, target: [10,20], fatigueBudget: "low" },
+        { slotId: "C_calf", role: "calf_gastrocnemius", sets: 3, target: [8,20], fatigueBudget: "low" }
+      ]
+    }
+  };
+
+  const ProgrammeEngine = (() => {
+    const valueScore = {
+      very_high: 5, high: 4, moderate_to_high: 3.5, moderate: 3,
+      low_to_moderate: 2.5, moderate_to_low: 2.5, low: 2, very_low: 1
+    };
+    const confidenceScore = { high: 1, moderate: .65, low: .3, coaching_heuristic: .15 };
+
+    function characteristic(exercise, key) {
+      return exercise.training_characteristics?.[key] || null;
+    }
+
+    function numericValue(characteristicValue) {
+      return valueScore[String(characteristicValue || "").toLowerCase()] || 2.5;
+    }
+
+    function scoreExercise(exercise, slot, context) {
+      if (!(exercise.default_programme_roles || []).includes(slot.role)) return -Infinity;
+
+      let score = 0;
+      const reasons = [];
+      const hypertrophy = characteristic(exercise, "hypertrophy_suitability");
+      const progression = characteristic(exercise, "progression_simplicity");
+      const stability = characteristic(exercise, "stability_requirement");
+      const fatigue = characteristic(exercise, "systemic_fatigue");
+
+      if (hypertrophy) {
+        score += numericValue(hypertrophy.value) * 2.1;
+        score += (confidenceScore[hypertrophy.confidence] || 0) * .7;
+        reasons.push(`${humanize(hypertrophy.value)} hypertrophy suitability`);
+      }
+
+      if (progression) {
+        score += numericValue(progression.value) * .55;
+        if (numericValue(progression.value) >= 3.5) reasons.push("simple to progress");
+      }
+
+      // For a hypertrophy-biased programme, external stability is generally useful,
+      // but it never overrides exercise role or user preference by itself.
+      if (stability) {
+        const stabilityValue = numericValue(stability.value);
+        if (stabilityValue <= 3) score += .8;
+        else if (stabilityValue >= 4) score -= .35;
+      }
+
+      if (fatigue) {
+        const fatigueValue = numericValue(fatigue.value);
+        const budget = slot.fatigueBudget || "moderate";
+        if (budget === "low") score -= Math.max(0, fatigueValue - 2.5) * 1.15;
+        if (budget === "moderate") score -= Math.max(0, fatigueValue - 3) * .7;
+        if (budget === "high") score -= Math.max(0, fatigueValue - 4) * .3;
+        if (fatigueValue <= 2.5) reasons.push("low whole-body cost");
+      }
+
+      // Programme variation is deliberate: do not repeat the exact same exercise in the week
+      // unless the role leaves us no sensible alternative.
+      if (context.usedExerciseIds.has(exercise.id)) score -= 8;
+
+      // A small bonus for direct exercise-specific evidence.
+      const linkedClaims = KnowledgeService.getClaims(exercise.id);
+      const highConfidenceClaims = linkedClaims.filter((claim) => claim.confidence === "high").length;
+      score += Math.min(highConfidenceClaims, 2) * .3;
+
+      return { score, reasons };
+    }
+
+    function chooseExercise(slot, context) {
+      const candidates = KB.exercises
+        .filter((exercise) => (exercise.default_programme_roles || []).includes(slot.role))
+        .map((exercise) => {
+          const result = scoreExercise(exercise, slot, context);
+          return { exercise, score: result.score, reasons: result.reasons };
+        })
+        .filter((candidate) => Number.isFinite(candidate.score))
+        .sort((a, b) => b.score - a.score || a.exercise.id.localeCompare(b.exercise.id));
+
+      const winner = candidates[0];
+      if (!winner) throw new Error(`No exercise found for programme role: ${slot.role}`);
+      return winner;
+    }
+
+    function clampTargetToExercise(target, exercise) {
+      const common = exercise.programming_defaults?.common_rep_range || target;
+      const low = Math.max(target[0], common[0]);
+      const high = Math.min(target[1], common[1]);
+      return low <= high ? [low, high] : target;
+    }
+
+    function buildProgramme(profile = PROGRAMME_PROFILE) {
+      const context = { usedExerciseIds: new Set() };
+      const workouts = {};
+      const explanations = {};
+
+      Object.entries(PROGRAMME_BLUEPRINTS).forEach(([workoutName, blueprint]) => {
+        explanations[workoutName] = {
+          read: blueprint.read,
+          slots: []
+        };
+
+        workouts[workoutName] = blueprint.slots.map((slot) => {
+          const chosen = chooseExercise(slot, context);
+          const exercise = chosen.exercise;
+          context.usedExerciseIds.add(exercise.id);
+
+          const target = clampTargetToExercise(slot.target, exercise);
+          const midpoint = Math.round((target[0] + target[1]) / 2);
+          const currentLoad = demoLoadFor(exercise.id, 20);
+          const reason = [
+            humanize(slot.role),
+            ...chosen.reasons.slice(0, 2)
+          ].join(" · ");
+
+          explanations[workoutName].slots.push({
+            slotId: slot.slotId,
+            role: slot.role,
+            exerciseId: exercise.id,
+            reason
+          });
+
+          return {
+            slotId: slot.slotId,
+            role: slot.role,
+            exerciseId: exercise.id,
+            sets: slot.sets,
+            target,
+            reps: midpoint,
+            lastWeight: currentLoad,
+            lastReps: midpoint,
+            engineReason: reason
+          };
+        });
+      });
+
+      return { profile, workouts, explanations };
+    }
+
+    return { buildProgramme };
+  })();
+
+  const generatedProgramme = ProgrammeEngine.buildProgramme(PROGRAMME_PROFILE);
+  const workoutTemplates = generatedProgramme.workouts;
+  const programmeExplanations = generatedProgramme.explanations;
+
+
 
   const WEEK_PLAN_KEY = "heybuddy_week_plan_v7";
   const dayLabels = ["M","T","W","T","F","S","S"];
@@ -602,9 +768,13 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
     const template = workoutTemplates[workoutName] || workoutTemplates["Full Body A"];
     return template.map((item) => {
       const savedId = savedSwaps[item.slotId];
-      const chosenId = KnowledgeService.getExercise(savedId) ? savedId : item.exerciseId;
+      const savedExercise = KnowledgeService.getExercise(savedId);
+      const savedFitsRole = savedExercise && (!item.role || (savedExercise.default_programme_roles || []).includes(item.role));
+      const chosenId = savedFitsRole ? savedId : item.exerciseId;
       return {
         slotId: item.slotId,
+        role: item.role || null,
+        engineReason: item.engineReason || null,
         baseExerciseId: item.exerciseId,
         activeExerciseId: chosenId,
         sets: item.sets,
@@ -730,7 +900,7 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
     const entry = planForDay(currentDayIndex());
     if (entry) {
       $("todayWorkoutName").textContent = entry.workout;
-      $("todayWorkoutMeta").textContent = `${workoutTemplates[entry.workout]?.length || 6} exercises · scheduled workout`;
+      $("todayWorkoutMeta").textContent = `${workoutTemplates[entry.workout]?.length || 6} exercises · Buddy-built hypertrophy`;
       $("beginBtn").textContent = "Begin";
     } else {
       $("todayWorkoutName").textContent = "Recovery day";
@@ -754,10 +924,22 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
     const entry = planForDay(dayIndex);
     $("daySheetTitle").textContent = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" }).format(date);
     if (entry) {
-      const count = workoutTemplates[entry.workout]?.length || 6;
+      const template = workoutTemplates[entry.workout] || [];
+      const previewExercises = createExercisesForWorkout(entry.workout);
+      const count = previewExercises.length || 6;
+      const explanation = programmeExplanations[entry.workout];
+      const exerciseList = previewExercises.map((item) => {
+        const exercise = KnowledgeService.getExercise(item.activeExerciseId);
+        const isOverride = item.activeExerciseId !== item.baseExerciseId;
+        const reason = isOverride
+          ? `Your default · ${humanize(item.role || "programme role")}`
+          : (item.engineReason || humanize(item.role || ""));
+        return `<p style="margin:8px 0;"><strong>${escapeHtml(exercise?.name || item.activeExerciseId)}</strong><br><span style="color:var(--muted);font-size:10px;">${escapeHtml(reason)}</span></p>`;
+      }).join("");
       $("daySheetContent").innerHTML = `
-        <div class="sheet-section"><h3>Planned</h3><p><strong>${entry.workout}</strong><br>${count} exercises</p></div>
-        <div class="sheet-section"><h3>Buddy's read</h3><p>This is one of the working days. Nothing mysterious hiding behind the curtains.</p></div>`;
+        <div class="sheet-section"><h3>Planned</h3><p><strong>${entry.workout}</strong><br>${count} exercises · balanced hypertrophy</p>${exerciseList}</div>
+        <div class="sheet-section"><h3>Buddy's build</h3><p>${escapeHtml(explanation?.read || "The programme roles come first. Exercises are chosen from the training database to fill those jobs.")}</p></div>
+        <div class="sheet-section"><h3>Why this isn't random</h3><p>Buddy scores exercises by programme role, hypertrophy suitability, progression, stability, fatigue cost and weekly variation. Same inputs, same plan.</p></div>`;
     } else {
       const next = nextPlanAfter(dayIndex);
       $("daySheetContent").innerHTML = `
@@ -1349,6 +1531,7 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
           ${escapeHtml((data.default_programme_roles || []).map(humanize).join(" · "))}
         </p>
       </div>
+      ${exerciseState.engineReason ? `<div class="sheet-section"><h3>Why it's in this workout</h3><p>${escapeHtml(exerciseState.engineReason)}</p></div>` : ""}
       <div class="sheet-section"><h3>Technique</h3><p>${(data.technique?.priority_cues || []).map((cue) => `• ${escapeHtml(cue)}`).join("<br>")}</p></div>
       <div class="sheet-section"><h3>Common mistakes</h3><p>${(data.technique?.common_mistakes || []).map((mistake) => `• ${escapeHtml(mistake)}`).join("<br>")}</p></div>
       <div class="sheet-section"><h3>Muscles</h3><p><strong>Primary</strong> · ${escapeHtml(primaryMuscles)}<br><strong>Secondary</strong> · ${escapeHtml(secondaryMuscles)}</p></div>
@@ -1495,6 +1678,9 @@ window.HEYBUDDY_KNOWLEDGE = {"version": "1.4", "exercises": [{"id": "barbell_ben
     assert("Exercise resolves by ID", KnowledgeService.getExercise("incline_dumbbell_press")?.name === "Incline Dumbbell Press");
     assert("Rest guidance comes from DB", KnowledgeService.getRestGuidance("incline_dumbbell_press").defaultSeconds === 120);
     assert("Substitution graph comes from DB", KnowledgeService.getAlternatives("incline_dumbbell_press").some((item) => item.exercise.id === "incline_smith_press"));
+    assert("Programme Engine built three workouts", Object.keys(workoutTemplates).length === 3);
+    assert("Programme Engine fills every slot", Object.values(workoutTemplates).every((workout) => workout.length === 6 && workout.every((item) => KnowledgeService.getExercise(item.exerciseId))));
+    assert("Programme Engine does not duplicate exact exercises", new Set(Object.values(workoutTemplates).flat().map((item) => item.exerciseId)).size === 18);
 
     showScreen("workout");
     resetSessionForWorkout("Full Body A");
